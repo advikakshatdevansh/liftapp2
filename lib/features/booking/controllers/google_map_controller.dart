@@ -80,7 +80,7 @@ class CustomMapController extends GetxController {
     if (data['status'] != 'OK') return [];
 
     final encodedPolyline = data['routes'][0]['overview_polyline']['points'];
-    distance = data['routes'][0]['legs'][0]['distance'];
+    distance = (data['routes'][0]['legs'][0]['distance']['value'] / 1000.0);
     return decodePolyline(encodedPolyline);
   }
 
