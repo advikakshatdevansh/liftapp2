@@ -3,9 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../common/widgets/texts/section_heading.dart';
 import '../../../utils/constants/sizes.dart';
-// import '../../features/dashboard/ecommerce/controllers/dummy_data.dart';
 import '../models/address_model.dart';
-import '../screens/address/single_address_widget.dart';
 
 class AddressController extends GetxController {
   static AddressController get instance => Get.find();
