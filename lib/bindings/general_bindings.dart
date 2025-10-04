@@ -26,7 +26,7 @@ class GeneralBindings extends Bindings {
     Get.put(ThemeController());
     // Get.put(ProductController());
     Get.lazyPut(() => UserController());
-    Get.lazyPut(() => ActiveLiftsController());
+    Get.lazyPut(() => ActiveLiftsController(), fenix: true);
     Get.lazyPut(() => LiftRepository(), fenix: true);
     Get.lazyPut(() => AddressController());
     Get.lazyPut(() => LocationsController(), fenix: true);

@@ -12,7 +12,7 @@ class CustomMapController extends GetxController {
   late GoogleMapController mapController;
   var markers = <Marker>[].obs;
   var polylines = <Polyline>[].obs;
-  late double distance;
+  var distance = 0.0.obs;
 
   final String apiKey =
       "AIzaSyCt3L7NKLGXvdO94-laFxzUPMPWNRzH9Q4"; // Replace with your key
@@ -80,7 +80,8 @@ class CustomMapController extends GetxController {
     if (data['status'] != 'OK') return [];
 
     final encodedPolyline = data['routes'][0]['overview_polyline']['points'];
-    distance = (data['routes'][0]['legs'][0]['distance']['value'] / 1000.0);
+    distance.value =
+        (data['routes'][0]['legs'][0]['distance']['value'] / 1000.0);
     return decodePolyline(encodedPolyline);
   }
 

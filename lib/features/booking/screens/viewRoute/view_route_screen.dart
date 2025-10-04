@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:liftapp2/data/repository/lift_repository/lift_repository.dart';
-import 'package:liftapp2/data/repository/notifications/authrepository.dart';
-import 'package:liftapp2/data/repository/user_repository/user_repository.dart';
 import 'package:liftapp2/features/booking/screens/viewRoute/widgets/google_map_widget.dart';
 import 'package:liftapp2/features/booking/screens/viewRoute/widgets/select_vehicle_widget.dart';
+import 'package:liftapp2/routes/app_routes.dart';
+
 import '../../../../data/models/lift_model.dart';
+import '../../../../data/repository/lift_repository/lift_repository.dart';
+import '../../../../data/repository/notifications/authrepository.dart';
 import '../../controllers/google_map_controller.dart';
 
 class ViewRoute extends StatelessWidget {
@@ -33,24 +34,30 @@ class ViewRoute extends StatelessWidget {
     return Stack(
       children: [
         CustomMap(source: source, destination: destination),
-        PublishButton(
-          onTap: () async {
-            final controller = Get.find<CustomMapController>();
-            final liftModel = LiftModel(
-              userId: AuthenticationRepository.instance.getUserID,
-              source: GeoPoint(source.latitude, source.longitude),
-              destination: GeoPoint(
-                destination.latitude,
-                destination.longitude,
-              ),
-              sourceName: sourcename,
-              destinationName: destinationname,
-              distanceKm: controller.distance,
-              createdAt: DateTime.now(),
-              status: "looking",
-            );
-            await LiftRepository.instance.createLift(liftModel);
-          },
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: PublishButton(
+            onTap: () async {
+              final controller = Get.find<CustomMapController>();
+              final liftModel = LiftModel(
+                userId: AuthenticationRepository.instance.getUserID,
+                source: GeoPoint(source.latitude, source.longitude),
+                destination: GeoPoint(
+                  destination.latitude,
+                  destination.longitude,
+                ),
+                sourceName: sourcename,
+                destinationName: destinationname,
+                distanceKm: controller.distance.value,
+                createdAt: DateTime.now(),
+                status: "looking",
+              );
+              await LiftRepository.instance.createLift(liftModel);
+              Get.toNamed(TRoutes.activeLifts);
+            },
+          ),
         ),
       ],
     );
