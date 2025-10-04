@@ -7,6 +7,8 @@ import 'package:liftapp2/personalization/screens/active_lifts/active_lifts_scree
 import 'package:liftapp2/personalization/screens/notification/notification_screen.dart';
 import 'package:liftapp2/personalization/screens/profile/re_authenticate_phone_otp_screen.dart';
 import '../bindings/notification_binding.dart';
+import '../features/UI/Dashboard.dart';
+import '../features/UI/Rider.dart';
 import '../features/authentication/screens/forget_password/forget_password_otp/otp_screen.dart';
 import '../features/authentication/screens/login/login_screen.dart';
 import '../features/booking/screens/selectLocation/select_location_screen.dart';
@@ -44,6 +46,7 @@ class TRoutes {
   static const cartScreen = '/cart-screen';
   static const checkoutScreen = '/checkout-screen';
   static const favouritesScreen = '/favourites-screen';
+  static const String riders = '/rider'  ;
 
   static const activeLifts = '/active-lifts';
 
@@ -76,6 +79,7 @@ class TRoutes {
     GetPage(name: TRoutes.cartScreen, page: () => const MyHomePage()),
     GetPage(name: TRoutes.checkoutScreen, page: () => const MyHomePage()),
     GetPage(name: TRoutes.favouritesScreen, page: () => const MyHomePage()),
+    GetPage(name: TRoutes.riders, page: () =>  RideListPage()),
 
     GetPage(
       name: TRoutes.notification,
@@ -90,6 +94,7 @@ class TRoutes {
       transition: Transition.fade,
     ),
   ];
+
 }
 
 // class AppRoutes {
