@@ -26,6 +26,7 @@ class ActiveLiftsController extends GetxController {
       final fetchedLifts = await LiftRepository.instance.getUserLifts(userId);
 
       lifts.assignAll(fetchedLifts);
+      print(lifts);
     } catch (e) {
       print('Error fetching lifts: $e');
       rethrow;
