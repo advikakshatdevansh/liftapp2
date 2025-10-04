@@ -93,8 +93,11 @@ class TDrawer extends StatelessWidget {
       ),
       _buildDrawerItem(
         icon: Iconsax.home,
-        title: "E-Commerce Dashboard",
-        onTap: () => Get.toNamed(TRoutes.eComDashboard),
+        title: "ActiveLifts",
+        onTap: () {
+          print("clicked on activeLifts");
+          Get.toNamed(TRoutes.activeLifts);
+        },
       ),
       _buildDrawerItem(
         icon: Iconsax.shopping_cart,

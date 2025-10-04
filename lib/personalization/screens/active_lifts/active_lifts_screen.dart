@@ -7,10 +7,8 @@ class ActiveLifts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("opened lifts");
     final controller = ActiveLiftsController.instance;
-
-    controller.fetchUserLifts();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Active Lifts'),

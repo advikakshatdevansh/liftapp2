@@ -4,6 +4,8 @@ class LiftModel {
   final String userId;
   final GeoPoint source;
   final GeoPoint destination;
+  final String sourceName;
+  final String destinationName;
   final double distanceKm;
   final DateTime createdAt;
   final String status;
@@ -12,6 +14,8 @@ class LiftModel {
     required this.userId,
     required this.source,
     required this.destination,
+    required this.sourceName,
+    required this.destinationName,
     required this.distanceKm,
     required this.createdAt,
     required this.status,
@@ -21,6 +25,8 @@ class LiftModel {
     "userId": userId,
     "source": source,
     "destination": destination,
+    "sourceName": sourceName,
+    "destinationName": destinationName,
     "distanceKm": distanceKm,
     "createdAt": createdAt,
     "status": status,
@@ -31,6 +37,8 @@ class LiftModel {
     return LiftModel(
       userId: data["userId"],
       source: data["source"],
+      sourceName: data["sourceName"],
+      destinationName: data["destinationName"],
       destination: data["destination"],
       distanceKm: data["distanceKm"]?.toDouble() ?? 0.0,
       createdAt: (data["createdAt"] as Timestamp).toDate(),
@@ -45,5 +53,7 @@ class LiftModel {
     distanceKm: 0,
     createdAt: DateTime.now(),
     status: "",
+    sourceName: '',
+    destinationName: '',
   );
 }

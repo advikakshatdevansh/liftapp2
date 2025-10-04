@@ -70,7 +70,7 @@ class AuthenticationRepository extends GetxController {
           await TLocalStorage.init(user.uid);
           Get.offAllNamed(TRoutes.selectLocation);
         } else {
-          Get.offAll(() => PhoneNumberScreen());
+          Get.offAllNamed(TRoutes.selectLocation);
         }
       } else {
         Get.offAll(() => VerifyEmailScreen(email: getUserEmail));

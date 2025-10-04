@@ -3,6 +3,7 @@ import 'package:liftapp2/features/authentication/screens/on_boarding/on_boarding
 import 'package:liftapp2/features/authentication/screens/signup/signup_screen.dart';
 import 'package:liftapp2/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:liftapp2/main.dart';
+import 'package:liftapp2/personalization/screens/active_lifts/active_lifts_screen.dart';
 import 'package:liftapp2/personalization/screens/notification/notification_screen.dart';
 import 'package:liftapp2/personalization/screens/profile/re_authenticate_phone_otp_screen.dart';
 import '../bindings/notification_binding.dart';
@@ -44,6 +45,8 @@ class TRoutes {
   static const checkoutScreen = '/checkout-screen';
   static const favouritesScreen = '/favourites-screen';
 
+  static const activeLifts = '/active-lifts';
+
   //Notification
   static const notification = '/notification';
   static const notificationDetails = '/notification-details';
@@ -55,6 +58,13 @@ class TRoutes {
     GetPage(name: TRoutes.onboarding, page: () => const OnBoardingScreen()),
     GetPage(name: TRoutes.selectLocation, page: () => const SelectLocation()),
     GetPage(name: TRoutes.eComDashboard, page: () => const MyHomePage()),
+    GetPage(
+      name: TRoutes.activeLifts,
+      page: () {
+        print("routed active lifts");
+        return const ActiveLifts();
+      },
+    ),
     GetPage(name: TRoutes.home, page: () => const SelectLocation()),
     GetPage(name: TRoutes.phoneSignIn, page: () => const MyHomePage()),
     GetPage(name: TRoutes.otpVerification, page: () => const OTPScreen()),

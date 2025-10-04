@@ -8,6 +8,11 @@ class ActiveLiftsController extends GetxController {
 
   final lifts = <LiftModel>[].obs;
   final isLoading = false.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUserLifts();
+  }
 
   Future<void> fetchUserLifts({bool fetchLatest = false}) async {
     try {

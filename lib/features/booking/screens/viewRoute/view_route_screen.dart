@@ -14,13 +14,19 @@ class ViewRoute extends StatelessWidget {
   const ViewRoute({
     super.key,
     required this.source,
+    required this.sourcename,
     required this.destination,
+    required this.destinationname,
     required this.apiKey,
   });
 
   final LatLng source;
   final LatLng destination;
   final String apiKey;
+
+  final sourcename;
+
+  final destinationname;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +43,8 @@ class ViewRoute extends StatelessWidget {
                 destination.latitude,
                 destination.longitude,
               ),
+              sourceName: sourcename,
+              destinationName: destinationname,
               distanceKm: controller.distance,
               createdAt: DateTime.now(),
               status: "looking",
