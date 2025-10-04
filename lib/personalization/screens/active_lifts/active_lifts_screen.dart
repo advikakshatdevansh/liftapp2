@@ -34,7 +34,7 @@ class ActiveLifts extends StatelessWidget {
             final lift = controller.lifts[index];
             return ListTile(
               leading: const Icon(Icons.directions_car),
-              title: Text('Lift to ${lift.destination}'),
+              title: Text('Lift to ${lift.destinationName}'),
               subtitle: Text('Distance: ${lift.distanceKm} km'),
               trailing: Text(lift.status),
             );

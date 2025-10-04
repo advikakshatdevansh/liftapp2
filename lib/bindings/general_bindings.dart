@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:liftapp2/data/repository/lift_repository/lift_repository.dart';
 import '../data/repository/notifications/authrepository.dart';
+import '../data/repository/ride_repository/ride_repository.dart';
 import '../data/services/notifications/notification_service.dart';
 import '../features/authentication/controllers/login_controller.dart';
 import '../features/authentication/controllers/on_boarding_controller.dart';
@@ -22,12 +23,14 @@ class GeneralBindings extends Bindings {
 
     /// -- Repository
     Get.lazyPut(() => AuthenticationRepository(), fenix: true);
+
     // Get.put(CartController());
     Get.put(ThemeController());
     // Get.put(ProductController());
     Get.lazyPut(() => UserController());
     Get.lazyPut(() => ActiveLiftsController(), fenix: true);
     Get.lazyPut(() => LiftRepository(), fenix: true);
+    Get.lazyPut(() => RideRepository(), fenix: true);
     Get.lazyPut(() => AddressController());
     Get.lazyPut(() => LocationsController(), fenix: true);
     Get.lazyPut(() => OnBoardingController(), fenix: true);

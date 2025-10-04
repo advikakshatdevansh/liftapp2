@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class LiftModel {
+class RideModel {
   final String userId;
   final GeoPoint source;
   final GeoPoint destination;
@@ -9,8 +9,9 @@ class LiftModel {
   final double distanceKm;
   final DateTime createdAt;
   final String status;
+  final int seatsAvailable;
 
-  LiftModel({
+  RideModel({
     required this.userId,
     required this.source,
     required this.destination,
@@ -19,6 +20,7 @@ class LiftModel {
     required this.distanceKm,
     required this.createdAt,
     required this.status,
+    required this.seatsAvailable,
   });
 
   Map<String, dynamic> toJson() => {
@@ -30,37 +32,35 @@ class LiftModel {
     "distanceKm": distanceKm,
     "createdAt": createdAt,
     "status": status,
+    "seatsAvailable": seatsAvailable,
   };
 
-  factory LiftModel.fromDoc(DocumentSnapshot<Map<String, dynamic>> document) {
-    final data = document.data();
-    if (data == null) {
-      // Handle the case where the document is empty, maybe return a default or throw an error
-      throw Exception("Document data was null!");
-    }
+  factory RideModel.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data();
+    if (data == null) throw Exception("Document data is null!");
 
-    return LiftModel(
+    return RideModel(
       userId: data['userId'] ?? '',
       source: data['source'] as GeoPoint,
       destination: data['destination'] as GeoPoint,
       sourceName: data['sourceName'] ?? '',
       destinationName: data['destinationName'] ?? '',
-      distanceKm: (data['distanceKm'] as num)
-          .toDouble(), // Safely cast to double
-      // Correctly convert Timestamp to DateTime
+      distanceKm: (data['distanceKm'] as num).toDouble(),
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       status: data['status'] ?? '',
+      seatsAvailable: data['seatsAvailable'] ?? 1,
     );
   }
 
-  static LiftModel empty() => LiftModel(
-    userId: "",
-    source: GeoPoint(0, 0),
-    destination: GeoPoint(0, 0),
-    distanceKm: 0,
-    createdAt: DateTime.now(),
-    status: "",
+  static RideModel empty() => RideModel(
+    userId: '',
+    source: const GeoPoint(0, 0),
+    destination: const GeoPoint(0, 0),
     sourceName: '',
     destinationName: '',
+    distanceKm: 0,
+    createdAt: DateTime.now(),
+    status: '',
+    seatsAvailable: 1,
   );
 }

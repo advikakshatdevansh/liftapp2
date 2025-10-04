@@ -12,7 +12,7 @@ class CustomMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Put controller
-    final controller = Get.put(CustomMapController());
+    final controller = Get.find<CustomMapController>();
 
     // Add markers once (avoid duplicates)
     if (controller.markers.isEmpty) {
