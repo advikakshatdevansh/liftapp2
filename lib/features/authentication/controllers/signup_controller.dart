@@ -1,11 +1,8 @@
-import 'dart:developer' as Debug;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../data/repository/notifications/authrepository.dart';
-import '../../../data/services/notifications/notification_service.dart';
-import '../../../personalization/controllers/create_notification_controller.dart';
 import '../../../personalization/controllers/user_controller.dart';
 import '../../../personalization/models/user_model.dart';
 import '../../../utils/constants/enums.dart';

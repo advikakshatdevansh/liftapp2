@@ -6,7 +6,6 @@ import '../../../personalization/controllers/user_controller.dart';
 import '../../../routes/app_routes.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/image_strings.dart';
-import '../../../utils/helpers/helper_functions.dart';
 import '../images/t_rounded_image.dart';
 
 /// A reusable custom drawer widget with predefined settings for account details,

@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:liftapp2/features/authentication/screens/on_boarding/on_boarding_screen.dart';
-import 'package:liftapp2/features/authentication/screens/phone_number/phone_number_screen.dart';
 import 'package:liftapp2/routes/app_routes.dart';
 import '../../../features/authentication/screens/signup/verify_email.dart';
 import '../../../features/authentication/screens/welcome/welcome_screen.dart';
