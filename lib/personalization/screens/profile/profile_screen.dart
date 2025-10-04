@@ -34,18 +34,7 @@ class ProfileScreen extends StatelessWidget {
           TTexts.tProfile,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
-        actions: [
-          Obx(
-            () => IconButton(
-              icon: Icon(
-                themeController.isDark.value
-                    ? LineAwesomeIcons.sun
-                    : LineAwesomeIcons.moon,
-              ),
-              onPressed: () => themeController.toggleTheme(),
-            ),
-          ),
-        ],
+        actions: [],
       ),
       body: SingleChildScrollView(
         child: Container(

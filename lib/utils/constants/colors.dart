@@ -2,37 +2,64 @@ import 'package:flutter/material.dart';
 
 class TColors {
   // App theme colors
-  static const Color primary = Color(0xFFFFE400);
+  static const Color primary = Color(0xFF33C5B3);
   static const Color secondary = Color(0xFF272727);
   static const Color secondaryLight = Color(0xC9346DAE);
-  static const Color primaryBackground = Color(0xFFCCFBF1); // Primary Color Background
-  static const Color secondaryBackground = Color(0xFFFFE4E6); // Secondary Color Background
+  static const Color primaryBackground = Color(
+    0xFFCCFBF1,
+  ); // Primary Color Background
+  static const Color secondaryBackground = Color(
+    0xFFFFE4E6,
+  ); // Secondary Color Background
   static const Color accent = Color(0xFF001BFF);
 
   // Dashboard Specific Colors
   static const Color dashboardAppbarBackground = Color(0xFF4b68ff);
 
   // Text colors
-  static const Color textPrimary = Color(0xFF222A3D); // Theme Nightingale Gray 80
-  static const Color textSecondary = Color(0xFF4B5363); // Theme Nightingale Gray 60
-  static const Color textDarkPrimary = Color(0xFFFFFFFF); // Theme Nightingale Gray White
-  static const Color textDarkSecondary = Color(0xFFD1D5DB); // Theme Nightingale Gray 30
+  static const Color textPrimary = Color(
+    0xFF222A3D,
+  ); // Theme Nightingale Gray 80
+  static const Color textSecondary = Color(
+    0xFF4B5363,
+  ); // Theme Nightingale Gray 60
+  static const Color textDarkPrimary = Color(
+    0xFFFFFFFF,
+  ); // Theme Nightingale Gray White
+  static const Color textDarkSecondary = Color(
+    0xFFD1D5DB,
+  ); // Theme Nightingale Gray 30
   static const Color textWhite = Colors.white;
 
-  static const Color disabledTextLight = Color(0xFFD1D5DB); // Theme Nightingale Gray 30
-  static const Color disabledBackgroundLight = Color(0xFFF3F4F6); // Theme Nightingale Gray ?
+  static const Color disabledTextLight = Color(
+    0xFFD1D5DB,
+  ); // Theme Nightingale Gray 30
+  static const Color disabledBackgroundLight = Color(
+    0xFFF3F4F6,
+  ); // Theme Nightingale Gray ?
 
-  static const Color disabledTextDark = textSecondary; // Theme Nightingale Gray 60
-  static const Color disabledBackgroundDark = Color(0xFF222A3D); // Theme Nightingale Gray 80
+  static const Color disabledTextDark =
+      textSecondary; // Theme Nightingale Gray 60
+  static const Color disabledBackgroundDark = Color(
+    0xFF222A3D,
+  ); // Theme Nightingale Gray 80
 
   // Background colors
   static const Color lightBackground = Color(0xFFFFFFFF);
-  static const Color darkBackground = Color(0xFF02040A); // Theme Nightingale Gray 100
+  static const Color darkBackground = Color(
+    0xFF02040A,
+  ); // Theme Nightingale Gray 100
 
   // Background Container colors
-  static const Color lightContainer = Color(0xFFF3F4F6); // Theme Nightingale Gray 10
-  static const Color darkContainer = Color(0xFF13192B); // Theme Nightingale Gray 90
-  static const Color cardBackgroundColor = Color(0xFFF7F5F1); // Theme Nightingale Gray 90
+  static const Color lightContainer = Color(
+    0xFFF3F4F6,
+  ); // Theme Nightingale Gray 10
+  static const Color darkContainer = Color(
+    0xFF13192B,
+  ); // Theme Nightingale Gray 90
+  static const Color cardBackgroundColor = Color(
+    0xFFF7F5F1,
+  ); // Theme Nightingale Gray 90
 
   // Button colors
   static const Color buttonPrimary = primary;
@@ -50,10 +77,18 @@ class TColors {
   static const Color onBoardingPage3Color = Color(0xffffdcbd);
 
   // Icon colors
-  static const Color iconPrimaryLight = Color(0xFF284C76); // Theme Nightingale Gray 80
-  static const Color iconSecondaryLight = Color(0xFF9CA3AF); // Theme Nightingale Gray 40
-  static const Color iconPrimaryDark = Color(0xFFFFFFFF); // Theme Nightingale Gray White
-  static const Color iconSecondaryDark = Color(0xFF9CA3AF); // Theme Nightingale Gray 40
+  static const Color iconPrimaryLight = Color(
+    0xFF284C76,
+  ); // Theme Nightingale Gray 80
+  static const Color iconSecondaryLight = Color(
+    0xFF9CA3AF,
+  ); // Theme Nightingale Gray 40
+  static const Color iconPrimaryDark = Color(
+    0xFFFFFFFF,
+  ); // Theme Nightingale Gray White
+  static const Color iconSecondaryDark = Color(
+    0xFF9CA3AF,
+  ); // Theme Nightingale Gray 40
 
   // Border colors
   static const Color borderPrimary = primary;
