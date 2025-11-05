@@ -12,6 +12,7 @@ import '../features/UI/Rider.dart';
 import '../features/authentication/screens/forget_password/forget_password_otp/otp_screen.dart';
 import '../features/authentication/screens/login/login_screen.dart';
 import '../features/booking/screens/selectLocation/select_location_screen.dart';
+import '../features/chatting/screens/all_chat_screen.dart';
 import '../personalization/screens/notification/notification_detail_screen.dart';
 import '../personalization/screens/profile/profile_screen.dart';
 
@@ -43,10 +44,11 @@ class TRoutes {
   static const reAuthenticateOtpVerification =
       '/re-authenticate-otp-verification';
   static const profileScreen = '/profile-screen';
-  static const cartScreen = '/cart-screen';
+  static const chatsScreen = '/chats-screen';
   static const checkoutScreen = '/checkout-screen';
   static const favouritesScreen = '/favourites-screen';
-  static const String riders = '/rider'  ;
+  static const String riders = '/rider';
+  static const allchats = '/allchats-screen';
 
   static const activeLifts = '/active-lifts';
 
@@ -76,10 +78,12 @@ class TRoutes {
       page: () => const ReAuthenticatePhoneOtpScreen(),
     ),
     GetPage(name: TRoutes.profileScreen, page: () => const ProfileScreen()),
-    GetPage(name: TRoutes.cartScreen, page: () => const MyHomePage()),
+    GetPage(name: TRoutes.chatsScreen, page: () => const AllChatsScreen()),
+    GetPage(name: TRoutes.allchats, page: () => const AllChatsScreen()),
+
     GetPage(name: TRoutes.checkoutScreen, page: () => const MyHomePage()),
     GetPage(name: TRoutes.favouritesScreen, page: () => const MyHomePage()),
-    GetPage(name: TRoutes.riders, page: () =>  RideListPage()),
+    GetPage(name: TRoutes.riders, page: () => RideListPage()),
 
     GetPage(
       name: TRoutes.notification,
@@ -94,7 +98,6 @@ class TRoutes {
       transition: Transition.fade,
     ),
   ];
-
 }
 
 // class AppRoutes {

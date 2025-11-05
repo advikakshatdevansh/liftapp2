@@ -127,8 +127,6 @@ class LocationsController extends GetxController {
   }
 
   void onLocationTextChanged(String input) async {
-    print("stuff changed");
-    // Invalidate the current field when user types
     currentField.invalidate();
 
     if (input.trim().isEmpty) {
@@ -199,7 +197,7 @@ class LocationsController extends GetxController {
   Future<void> bookRide() async {
     if (locationsFormKey.currentState!.validate()) {
       print("Form submitted!");
-      print("Source: ${sourceField.latLng.value}");
+
       print("Destination: ${destinationField.latLng.value}");
       if (sourceField.latLng.value != null &&
           destinationField.latLng.value != null) {
@@ -225,6 +223,10 @@ class LocationsController extends GetxController {
       print("using pos known at onready");
     } else {
       currentPosition = (await getCurrentPosition())!;
+      if (currentPosition == null) {
+        Get.snackbar("Could not open map", "");
+        return;
+      }
       print("fetching new pos");
     }
 

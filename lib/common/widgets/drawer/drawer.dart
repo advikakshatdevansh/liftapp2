@@ -8,15 +8,7 @@ import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../images/t_rounded_image.dart';
 
-/// A reusable custom drawer widget with predefined settings for account details,
-/// menu items, and a "Become a driver" section. The drawer's content is set
-/// internally and does not require parameters when used.
 class TDrawer extends StatelessWidget {
-  /// Creates a [TDrawer] widget.
-  ///
-  /// The [accountName], [accountEmail], [rating], and [drawerItems] parameters
-  /// are used to set the content of the drawer. These values are predefined within
-  /// the widget, and no parameters need to be passed when using this widget.
   const TDrawer({super.key});
 
   @override
@@ -71,7 +63,6 @@ class TDrawer extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          // Drawer menu items with predefined values
           ..._drawerItems(),
 
           const Spacer(),
@@ -80,9 +71,6 @@ class TDrawer extends StatelessWidget {
     );
   }
 
-  /// Builds a list of drawer items with predefined values.
-  ///
-  /// Each item includes an icon, title, and an optional subtitle.
   List<Widget> _drawerItems() {
     return [
       _buildDrawerItem(
@@ -91,34 +79,23 @@ class TDrawer extends StatelessWidget {
         onTap: () => Get.toNamed(TRoutes.profileScreen),
       ),
       _buildDrawerItem(
-        icon: Iconsax.home,
+        icon: Iconsax.like_dislike,
         title: "ActiveLifts",
-        onTap: () {
-          print("clicked on activeLifts");
-          Get.toNamed(TRoutes.activeLifts);
-        },
+        onTap: () => Get.toNamed(TRoutes.activeLifts),
       ),
       _buildDrawerItem(
-        icon: Iconsax.shopping_cart,
-        title: "Cart",
-        onTap: () => Get.toNamed(TRoutes.cartScreen),
+        icon: Iconsax.message,
+        title: "Chats",
+        onTap: () => Get.toNamed(TRoutes.allchats),
       ),
       _buildDrawerItem(
-        icon: Iconsax.shopping_bag,
-        title: "Checkout",
-        onTap: () => Get.toNamed(TRoutes.checkoutScreen),
-      ),
-      _buildDrawerItem(
-        icon: Iconsax.heart,
-        title: "Wishlist",
-        onTap: () => Get.toNamed(TRoutes.favouritesScreen),
+        icon: Iconsax.home,
+        title: "Home",
+        onTap: () => Get.toNamed(TRoutes.home),
       ),
     ];
   }
 
-  /// Helper method to build a drawer menu item.
-  ///
-  /// The item includes an icon, title, and an optional subtitle.
   Widget _buildDrawerItem({
     required IconData icon,
     required String title,

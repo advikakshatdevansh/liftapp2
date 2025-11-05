@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire_plus/geoflutterfire_plus.dart';
 
 class RideModel {
   final String userId;
@@ -33,6 +34,8 @@ class RideModel {
     "createdAt": createdAt,
     "status": status,
     "seatsAvailable": seatsAvailable,
+    "sourceGeohash": GeoFirePoint(source).data['geohash'],
+    "destinationGeohash": GeoFirePoint(destination).data['geohash'],
   };
 
   factory RideModel.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {

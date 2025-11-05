@@ -10,7 +10,6 @@ class SelectLocation extends StatelessWidget {
   Widget build(BuildContext context) {
     //Variables
     final txtTheme = Theme.of(context).textTheme;
-
     return SafeArea(
       child: Scaffold(
         appBar: DashboardAppBar(),

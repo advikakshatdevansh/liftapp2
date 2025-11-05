@@ -123,9 +123,9 @@ class ProfileScreen extends StatelessWidget {
                 onPress: () => Get.toNamed(TRoutes.eComDashboard),
               ),
               ProfileMenuWidget(
-                title: "Cart",
-                icon: Icons.add_shopping_cart,
-                onPress: () => Get.toNamed(TRoutes.cartScreen),
+                title: "Chats",
+                icon: Icons.message,
+                onPress: () => Get.toNamed(TRoutes.chatsScreen),
               ),
               ProfileMenuWidget(
                 title: "Checkout",

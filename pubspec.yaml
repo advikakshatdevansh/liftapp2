@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_fonts: ^6.2.1
+  google_fonts: ^6.3.2
 
   ## -- STATE MANAGEMENT
   get: ^4.7.2
@@ -26,13 +26,13 @@ dependencies:
   flutter_otp_text_field: ^1.1.1
 
   ## -- FIREBASE PACKAGES
-  firebase_auth: ^5.5.3
-  firebase_core: ^3.13.0
+  firebase_auth: ^6.1.0
+  firebase_core: ^4.1.0
   google_sign_in: ^6.3.0
-  cloud_firestore: ^5.6.7
-  firebase_storage: ^12.4.5
-  firebase_messaging: ^15.2.6
-  firebase_crashlytics: ^4.3.6
+  cloud_firestore: ^6.0.0
+  firebase_storage: ^13.0.2
+  firebase_messaging: ^16.0.2
+  firebase_crashlytics: ^5.0.2
 
   # Notification
   flutter_local_notifications: ^19.2.1
@@ -43,13 +43,15 @@ dependencies:
   cupertino_icons: ^1.0.8
   line_awesome_flutter: ^3.0.1
 
-  #Google
+  #Google and Maps
   geopoint: ^1.0.0
   geolocator: ^14.0.2
+  geoflutterfire_plus: ^0.0.33
   google_places_flutter: ^2.1.1
   google_maps_flutter: ^2.13.1
 
   ## -- Utility PACKAGES
+  uuid: ^4.2.1
   intl: ^0.20.2
   logger: ^2.5.0
   lottie: ^3.3.1
@@ -59,16 +61,16 @@ dependencies:
   image_picker: ^1.1.2
   url_launcher: ^6.3.1
   carousel_slider: ^5.0.0
-  connectivity_plus: ^6.1.1
+  connectivity_plus: ^7.0.0
   country_code_picker: ^3.3.0
   flutter_native_splash: ^2.4.6
-  intl_phone_number_input: ^0.7.4
+  intl_phone_number_input: ^0.7.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true

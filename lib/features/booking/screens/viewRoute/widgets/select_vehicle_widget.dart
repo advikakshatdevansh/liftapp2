@@ -112,7 +112,7 @@ class PublishButton extends StatelessWidget {
                     elevation: 4,
                   ),
                   child: const Text(
-                    "Publish Lift",
+                    "Continue",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),

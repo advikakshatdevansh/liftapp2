@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:liftapp2/data/repository/ride_repository/ride_repository.dart';
 
 enum TransportMode { driving, walking, bicycling, transit }
-
-class RouteDetials {}
 
 class CustomMapController extends GetxController {
   late GoogleMapController mapController;
@@ -15,7 +14,7 @@ class CustomMapController extends GetxController {
   var distance = 0.0.obs;
 
   final String apiKey =
-      "AIzaSyCt3L7NKLGXvdO94-laFxzUPMPWNRzH9Q4"; // Replace with your key
+      "AIzaSyCt3L7NKLGXvdO94-laFxzUPMPWNRzH9Q4";
 
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -26,14 +25,49 @@ class CustomMapController extends GetxController {
     required LatLng destination,
   }) async {
     markers.clear();
-    markers.add(Marker(markerId: MarkerId("source"), position: source));
+
+    // Add user’s own source + destination markers
+    markers.add(Marker(markerId: const MarkerId("source"), position: source));
     markers.add(
-      Marker(markerId: MarkerId("destination"), position: destination),
+      Marker(markerId: const MarkerId("destination"), position: destination),
     );
 
+    // Draw user’s route
     await drawRoute(source: source, destination: destination);
 
+    // Adjust camera
     _moveCameraToFit(source, destination);
+
+    // 🔍 Find nearby rides
+    final List<LatLng> rides = await RideRepository.instance.findRides(
+      source,
+      destination,
+      10, // radius in km
+    );
+    print(rides);
+
+    if (rides.isNotEmpty) {
+      // 🧭 Add ride source markers on the map
+      for (int i = 0; i < rides.length; i++) {
+        final ridePos = rides[i];
+        markers.add(
+          Marker(
+            markerId: MarkerId('ride_$i'),
+            position: ridePos,
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueGreen,
+            ),
+            infoWindow: InfoWindow(
+              title: 'Available Ride ${i + 1}',
+              snippet:
+                  'Lat: ${ridePos.latitude.toStringAsFixed(4)}, Lng: ${ridePos.longitude.toStringAsFixed(4)}',
+            ),
+          ),
+        );
+      }
+    }
+
+    markers.refresh();
   }
 
   Future<void> drawRoute({
@@ -77,6 +111,10 @@ class CustomMapController extends GetxController {
     if (response.statusCode != 200) return [];
 
     final data = jsonDecode(response.body);
+    print(
+      "Directions API response: ${data['status']} - ${data['error_message']}",
+    );
+
     if (data['status'] != 'OK') return [];
 
     final encodedPolyline = data['routes'][0]['overview_polyline']['points'];
