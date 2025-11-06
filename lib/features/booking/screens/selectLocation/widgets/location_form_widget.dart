@@ -77,8 +77,10 @@ class LocationFormWidget extends StatelessWidget {
                         color: Colors.grey,
                       ),
                       title: Text(
-                        prediction["description"],
+                        prediction["display_name"] ?? 'Unknown place',
                         style: const TextStyle(fontSize: 14),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       onTap: () => controller.selectSuggestion(prediction),
                     );
