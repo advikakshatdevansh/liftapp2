@@ -43,9 +43,13 @@ class LocationFormWidget extends StatelessWidget {
               onPressed: controller.openMap,
               icon: const Icon(Icons.map),
               label: const Text('Select On Map'),
+              style: TextButton.styleFrom(
+                // Set the color for the text and icon
+                foregroundColor: Colors.white, // Change 'Colors.blue' to your desired color
+              ),
             ),
 
-            const SizedBox(height: 8),
+            // const SizedBox(height: 8),
 
             // Suggestions List
             Obx(() {

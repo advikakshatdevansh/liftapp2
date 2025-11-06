@@ -26,11 +26,15 @@ class SelectOnMap extends StatelessWidget {
             child: Icon(Icons.location_on, size: 50, color: Colors.red),
           ),
           Positioned(
-            bottom: 20,
+            bottom: 90,
             left: 20,
             right: 20,
             child: ElevatedButton(
               onPressed: mapController.selectLocation,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black, // Change 'Colors.teal' to your desired color
+                foregroundColor: Colors.white, // Sets the color of the 'Select Location' text
+              ),
               child: const Text('Select Location'),
             ),
           ),

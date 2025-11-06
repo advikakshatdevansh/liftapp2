@@ -67,14 +67,19 @@ class ViewRoute extends StatelessWidget {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: Colors.grey[400],
+                  color: Colors.black,
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
             ListTile(
               leading: const Icon(Icons.car_rental, color: Colors.green),
-              title: const Text("Give a Ride"),
+              title: const Text(
+                "Give a Ride",
+                style: TextStyle(
+                  color: Colors.black, // Set the text color to black
+                ),
+              ),
               onTap: () async {
                 Navigator.pop(context);
                 final ride = RideRepository.instance.createRide(
@@ -95,7 +100,13 @@ class ViewRoute extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.person_search, color: Colors.blue),
-              title: const Text("Get a Lift"),
+              // Removed const from Text and added TextStyle with black color
+              title: const Text(
+                "Get a Lift",
+                style: TextStyle(
+                  color: Colors.black, // Set the text color to black
+                ),
+              ),
               onTap: () async {
                 Navigator.pop(context);
                 final lift = LiftModel(
@@ -114,7 +125,7 @@ class ViewRoute extends StatelessWidget {
                 await LiftRepository.instance.createLift(lift);
                 Get.toNamed(TRoutes.activeLifts);
               },
-            ),
+            )
           ],
         ),
       ),

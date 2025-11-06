@@ -32,8 +32,8 @@ class PublishButton extends StatelessWidget {
                   // Distance on left
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+                      horizontal: 32,
+                      vertical: 12,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -50,10 +50,11 @@ class PublishButton extends StatelessWidget {
                       children: [
                         const Icon(Icons.route, size: 18, color: Colors.blue),
                         const SizedBox(width: 6),
+
                         Text(
                           '${distance.toStringAsFixed(2)} km',
-                          style: const TextStyle(
-                            fontSize: 16,
+                          style: TextStyle(
+                            fontSize: 20,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -63,8 +64,8 @@ class PublishButton extends StatelessWidget {
                   // Cost on right
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+                      horizontal: 32,
+                      vertical: 12,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -88,7 +89,7 @@ class PublishButton extends StatelessWidget {
                         Text(
                           estimatedCost,
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: Colors.green,
                           ),
@@ -106,17 +107,23 @@ class PublishButton extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onTap,
                   style: ElevatedButton.styleFrom(
+                    // 1. Set the background color to BLACK
+                    backgroundColor: Colors.black,
+
+                    // 2. Set the text/icon color to WHITE
+                    foregroundColor: Colors.white,
+                    side: BorderSide.none,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    elevation: 4,
+                    elevation: 3,
                   ),
                   child: const Text(
                     "Continue",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ),
-              ),
+              )
             ],
           );
         }),
