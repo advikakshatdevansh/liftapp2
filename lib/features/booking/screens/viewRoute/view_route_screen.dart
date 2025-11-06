@@ -19,12 +19,10 @@ class ViewRoute extends StatelessWidget {
     required this.sourcename,
     required this.destination,
     required this.destinationname,
-    required this.apiKey,
   });
 
   final LatLng source;
   final LatLng destination;
-  final String apiKey;
   final String sourcename;
   final String destinationname;
 
@@ -53,6 +51,7 @@ class ViewRoute extends StatelessWidget {
     BuildContext context,
     CustomMapController controller,
   ) {
+    // RideRepository.instance.addDummyRides();
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.all(20),
@@ -78,22 +77,19 @@ class ViewRoute extends StatelessWidget {
               title: const Text("Give a Ride"),
               onTap: () async {
                 Navigator.pop(context);
-                final ride = RideModel(
+                final ride = RideRepository.instance.createRide(
                   userId: AuthenticationRepository.instance.getUserID,
-                  source: GeoPoint(source.latitude, source.longitude),
-                  destination: GeoPoint(
+                  source: LatLng(source.latitude, source.longitude),
+                  destination: LatLng(
                     destination.latitude,
                     destination.longitude,
                   ),
                   sourceName: sourcename,
                   destinationName: destinationname,
                   distanceKm: controller.distance.value,
-                  createdAt: DateTime.now(),
                   status: "active",
                   seatsAvailable: 3, // default, you can customize
                 );
-                print("ride creation started");
-                await RideRepository.instance.createRide(ride);
                 Get.toNamed(TRoutes.activeLifts);
               },
             ),

@@ -30,7 +30,6 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      /// -- README(Docs[3]) -- Bindings
       title: "Starter Template",
       initialBinding: GeneralBindings(),
       themeMode: ThemeMode.system,
@@ -39,8 +38,6 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       getPages: TRoutes.pages,
 
-      /// -- README(Docs[4]) -- To use Screen Transitions here
-      /// -- README(Docs[5]) -- Home Screen or Progress Indicator
       home: const Scaffold(body: Center(child: CircularProgressIndicator())),
     );
   }

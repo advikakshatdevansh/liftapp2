@@ -20,9 +20,7 @@ class ActiveLiftsController extends GetxController {
 
       isLoading.value = true;
 
-      final userId = AuthenticationRepository
-          .instance
-          .getUserID; // get from AuthenticationRepository
+      final userId = AuthenticationRepository.instance.getUserID;
       final fetchedLifts = await LiftRepository.instance.getUserLifts(userId);
 
       lifts.assignAll(fetchedLifts);

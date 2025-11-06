@@ -13,9 +13,6 @@ class CustomMapController extends GetxController {
   var polylines = <Polyline>[].obs;
   var distance = 0.0.obs;
 
-  final String apiKey =
-      "AIzaSyCt3L7NKLGXvdO94-laFxzUPMPWNRzH9Q4";
-
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
@@ -26,8 +23,7 @@ class CustomMapController extends GetxController {
   }) async {
     markers.clear();
 
-    // Add user’s own source + destination markers
-    markers.add(Marker(markerId: const MarkerId("source"), position: source));
+    // markers.add(Marker(markerId: const MarkerId("source"), position: source));
     markers.add(
       Marker(markerId: const MarkerId("destination"), position: destination),
     );
@@ -39,15 +35,19 @@ class CustomMapController extends GetxController {
     _moveCameraToFit(source, destination);
 
     // 🔍 Find nearby rides
-    final List<LatLng> rides = await RideRepository.instance.findRides(
-      source,
-      destination,
-      10, // radius in km
+    final List<LatLng> rides = await RideRepository.instance.getAllRideSources(
+      source: source,
+      destination: destination,
     );
     print(rides);
+    print(
+      await RideRepository.instance.findRides(
+        source: source,
+        destination: destination,
+      ),
+    );
 
     if (rides.isNotEmpty) {
-      // 🧭 Add ride source markers on the map
       for (int i = 0; i < rides.length; i++) {
         final ridePos = rides[i];
         markers.add(
@@ -77,7 +77,6 @@ class CustomMapController extends GetxController {
     final points = await getRoutePoints(
       origin: source,
       destination: destination,
-      apiKey: apiKey,
     );
 
     if (points.isNotEmpty) {
@@ -96,43 +95,49 @@ class CustomMapController extends GetxController {
   Future<List<LatLng>> getRoutePoints({
     required LatLng origin,
     required LatLng destination,
-    required String apiKey,
     TransportMode mode = TransportMode.driving,
   }) async {
+    final profile = transportModeToOsmProfile(mode);
+
+    // OSRM API endpoint (free, no API key)
     final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/directions/json'
-      '?origin=${origin.latitude},${origin.longitude}'
-      '&destination=${destination.latitude},${destination.longitude}'
-      '&mode=${transportModeToString(mode)}'
-      '&key=$apiKey',
+      'https://router.project-osrm.org/route/v1/$profile/'
+      '${origin.longitude},${origin.latitude};'
+      '${destination.longitude},${destination.latitude}'
+      '?overview=full&geometries=polyline',
     );
 
     final response = await http.get(url);
-    if (response.statusCode != 200) return [];
+
+    if (response.statusCode != 200) {
+      print("OSRM request failed: ${response.statusCode}");
+      return [];
+    }
 
     final data = jsonDecode(response.body);
-    print(
-      "Directions API response: ${data['status']} - ${data['error_message']}",
-    );
+    if (data['routes'] == null || data['routes'].isEmpty) {
+      print("No route found in OSRM response");
+      return [];
+    }
 
-    if (data['status'] != 'OK') return [];
+    final encodedPolyline = data['routes'][0]['geometry'];
+    distance.value = data['routes'][0]['distance'] / 1000.0;
 
-    final encodedPolyline = data['routes'][0]['overview_polyline']['points'];
-    distance.value =
-        (data['routes'][0]['legs'][0]['distance']['value'] / 1000.0);
     return decodePolyline(encodedPolyline);
   }
 
-  String transportModeToString(TransportMode mode) {
+  String transportModeToOsmProfile(TransportMode mode) {
     switch (mode) {
-      case TransportMode.driving:
-        return 'driving';
       case TransportMode.walking:
-        return 'walking';
+        return 'foot';
       case TransportMode.bicycling:
-        return 'bicycling';
+        return 'bike';
       case TransportMode.transit:
-        return 'transit';
+        // OSRM doesn't directly support transit — fallback to driving
+        return 'car';
+      case TransportMode.driving:
+      default:
+        return 'car';
     }
   }
 

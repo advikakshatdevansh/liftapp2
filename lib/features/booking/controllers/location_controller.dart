@@ -205,7 +205,6 @@ class LocationsController extends GetxController {
           () => ViewRoute(
             source: sourceField.latLng.value!,
             destination: destinationField.latLng.value!,
-            apiKey: apiKey,
             sourcename: sourceField.controller.text,
             destinationname: destinationField.controller.text,
           ),

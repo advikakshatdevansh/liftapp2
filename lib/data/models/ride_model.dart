@@ -3,8 +3,8 @@ import 'package:geoflutterfire_plus/geoflutterfire_plus.dart';
 
 class RideModel {
   final String userId;
-  final GeoPoint source;
-  final GeoPoint destination;
+  final Map<String, dynamic> source;
+  final Map<String, dynamic> destination;
   final String sourceName;
   final String destinationName;
   final double distanceKm;
@@ -24,6 +24,7 @@ class RideModel {
     required this.seatsAvailable,
   });
 
+  /// Convert to JSON for Firestore
   Map<String, dynamic> toJson() => {
     "userId": userId,
     "source": source,
@@ -34,31 +35,37 @@ class RideModel {
     "createdAt": createdAt,
     "status": status,
     "seatsAvailable": seatsAvailable,
-    "sourceGeohash": GeoFirePoint(source).data['geohash'],
-    "destinationGeohash": GeoFirePoint(destination).data['geohash'],
   };
 
+  /// Create model from Firestore document
   factory RideModel.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data();
     if (data == null) throw Exception("Document data is null!");
 
     return RideModel(
       userId: data['userId'] ?? '',
-      source: data['source'] as GeoPoint,
-      destination: data['destination'] as GeoPoint,
+      source: Map<String, dynamic>.from(data['source'] ?? {}),
+      destination: Map<String, dynamic>.from(data['destination'] ?? {}),
       sourceName: data['sourceName'] ?? '',
       destinationName: data['destinationName'] ?? '',
-      distanceKm: (data['distanceKm'] as num).toDouble(),
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      distanceKm: (data['distanceKm'] as num?)?.toDouble() ?? 0.0,
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       status: data['status'] ?? '',
       seatsAvailable: data['seatsAvailable'] ?? 1,
     );
   }
 
+  /// Create a RideModel with empty/default values
   static RideModel empty() => RideModel(
     userId: '',
-    source: const GeoPoint(0, 0),
-    destination: const GeoPoint(0, 0),
+    source: {
+      "geopoint": const GeoPoint(0, 0),
+      "geohash": GeoFirePoint(const GeoPoint(0, 0)).geohash,
+    },
+    destination: {
+      "geopoint": const GeoPoint(0, 0),
+      "geohash": GeoFirePoint(const GeoPoint(0, 0)).geohash,
+    },
     sourceName: '',
     destinationName: '',
     distanceKm: 0,
@@ -66,4 +73,28 @@ class RideModel {
     status: '',
     seatsAvailable: 1,
   );
+
+  /// Helper for creating a RideModel with coordinates
+  factory RideModel.withLocations({
+    required String userId,
+    required GeoPoint sourcePoint,
+    required GeoPoint destinationPoint,
+    required String sourceName,
+    required String destinationName,
+    required double distanceKm,
+    required String status,
+    required int seatsAvailable,
+  }) {
+    return RideModel(
+      userId: userId,
+      source: GeoFirePoint(sourcePoint).data,
+      destination: GeoFirePoint(destinationPoint).data,
+      sourceName: sourceName,
+      destinationName: destinationName,
+      distanceKm: distanceKm,
+      createdAt: DateTime.now(),
+      status: status,
+      seatsAvailable: seatsAvailable,
+    );
+  }
 }
