@@ -4,9 +4,19 @@
 *.log
 *.pyc
 *.swp
+.idea/
+.vscode/
 .buildlog/
 .history
 
+
+# Android
+/android/local.properties
+/android/.gradle/
+
+# iOS
+/ios/Pods/
+/ios/Flutter/Flutter.podspec
 
 
 # Flutter repo-specific
