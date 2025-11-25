@@ -5,6 +5,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:liftapp2/data/repository/ride_repository/ride_repository.dart';
 
+import '../../../data/repository/lift_repository/lift_repository.dart';
+
 enum TransportMode { driving, walking, bicycling, transit }
 
 class CustomMapController extends GetxController {
@@ -12,6 +14,9 @@ class CustomMapController extends GetxController {
   var markers = <Marker>[].obs;
   var polylines = <Polyline>[].obs;
   var distance = 0.0.obs;
+
+  var isListReady = false.obs; // enables next button
+  var isRide = false.obs;
 
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -34,40 +39,137 @@ class CustomMapController extends GetxController {
     // Adjust camera
     _moveCameraToFit(source, destination);
 
-    // 🔍 Find nearby rides
+    // // 🔍 Find nearby rides
+    // final List<LatLng> rides = await RideRepository.instance.getAllRideSources(
+    //   source: source,
+    //   destination: destination,
+    //   radius: 1,
+    // );
+    //
+    // if (rides.isNotEmpty) {
+    //   for (int i = 0; i < rides.length; i++) {
+    //     final ridePos = rides[i];
+    //     markers.add(
+    //       Marker(
+    //         markerId: MarkerId('ride_$i'),
+    //         position: ridePos,
+    //         icon: BitmapDescriptor.defaultMarkerWithHue(
+    //           BitmapDescriptor.hueGreen,
+    //         ),
+    //         infoWindow: InfoWindow(
+    //           title: 'Available Ride ${i + 1}',
+    //           snippet:
+    //               'Lat: ${ridePos.latitude.toStringAsFixed(4)}, Lng: ${ridePos.longitude.toStringAsFixed(4)}',
+    //         ),
+    //       ),
+    //     );
+    //   }
+    // }
+    //
+    // markers.refresh();
+  }
+
+  Future<void> displayNearbyRides({
+    required LatLng source,
+    required LatLng destination,
+    double radius = 1,
+  }) async {
+    // Clear only ride markers (keep existing route markers if any)
+    markers.removeWhere((m) => m.markerId.value.startsWith("lift_"));
+    markers.removeWhere((m) => m.markerId.value.startsWith("ride_"));
+
+    // Fetch ride source positions
     final List<LatLng> rides = await RideRepository.instance.getAllRideSources(
       source: source,
       destination: destination,
-    );
-    print(rides);
-    print(
-      await RideRepository.instance.findRides(
-        source: source,
-        destination: destination,
-      ),
+      radius: radius,
     );
 
-    if (rides.isNotEmpty) {
-      for (int i = 0; i < rides.length; i++) {
-        final ridePos = rides[i];
+    if (rides.isEmpty) {
+      Get.snackbar(
+        "No Rides Found",
+        "No available rides near this location",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      markers.refresh();
+      return;
+    }
+
+    // Add ride markers
+    for (int i = 0; i < rides.length; i++) {
+      final ridePos = rides[i];
+      markers.add(
+        Marker(
+          markerId: MarkerId('ride_$i'),
+          position: ridePos,
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
+          infoWindow: InfoWindow(
+            title: 'Available Ride ${i + 1}',
+            snippet:
+                'Lat: ${ridePos.latitude.toStringAsFixed(4)}, Lng: ${ridePos.longitude.toStringAsFixed(4)}',
+          ),
+        ),
+      );
+    }
+
+    markers.refresh();
+    isListReady.value = true; // show next button
+    isRide.value = false;
+  }
+
+  Future<void> displayNearbyLifts({
+    required LatLng source,
+    required LatLng destination,
+    double radius = 3,
+  }) async {
+    try {
+      // Remove previous lift markers
+      markers.removeWhere((m) => m.markerId.value.startsWith("lift_"));
+      markers.removeWhere((m) => m.markerId.value.startsWith("ride_"));
+      // Fetch lifts
+      final lifts = await LiftRepository.instance.getAllLiftSources(
+        source: source,
+        destination: destination,
+        radius: radius,
+      );
+
+      if (lifts.isEmpty) {
+        Get.snackbar(
+          "No Lifts Found",
+          "No nearby lifts available.",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        markers.refresh();
+        return;
+      }
+
+      // Add markers
+      for (int i = 0; i < lifts.length; i++) {
+        final liftPos = lifts[i];
+
         markers.add(
           Marker(
-            markerId: MarkerId('ride_$i'),
-            position: ridePos,
+            markerId: MarkerId("lift_$i"),
+            position: LatLng(liftPos.latitude, liftPos.longitude),
             icon: BitmapDescriptor.defaultMarkerWithHue(
               BitmapDescriptor.hueGreen,
             ),
             infoWindow: InfoWindow(
-              title: 'Available Ride ${i + 1}',
+              title: "Lift ${i + 1}",
               snippet:
-                  'Lat: ${ridePos.latitude.toStringAsFixed(4)}, Lng: ${ridePos.longitude.toStringAsFixed(4)}',
+                  'Lat: ${liftPos.latitude.toStringAsFixed(4)}, Lng: ${liftPos.longitude.toStringAsFixed(4)}',
             ),
           ),
         );
       }
+      markers.refresh();
+      isListReady.value = true; // show next button
+      isRide.value = true;
+    } catch (e) {
+      Get.snackbar("Error", "Failed to load lifts: $e");
     }
-
-    markers.refresh();
   }
 
   Future<void> drawRoute({

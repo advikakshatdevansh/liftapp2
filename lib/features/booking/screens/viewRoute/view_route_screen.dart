@@ -95,7 +95,12 @@ class ViewRoute extends StatelessWidget {
                   status: "active",
                   seatsAvailable: 3, // default, you can customize
                 );
-                Get.toNamed(TRoutes.activeLifts);
+
+                await controller.displayNearbyLifts(
+                  source: source,
+                  destination: destination,
+                );
+                // Get.toNamed(TRoutes.activeLifts);
               },
             ),
             ListTile(
@@ -109,23 +114,25 @@ class ViewRoute extends StatelessWidget {
               ),
               onTap: () async {
                 Navigator.pop(context);
-                final lift = LiftModel(
+                final lift = await LiftRepository.instance.createLift(
                   userId: AuthenticationRepository.instance.getUserID,
-                  source: GeoPoint(source.latitude, source.longitude),
-                  destination: GeoPoint(
+                  source: LatLng(source.latitude, source.longitude),
+                  destination: LatLng(
                     destination.latitude,
                     destination.longitude,
                   ),
                   sourceName: sourcename,
                   destinationName: destinationname,
                   distanceKm: controller.distance.value,
-                  createdAt: DateTime.now(),
                   status: "looking",
                 );
-                await LiftRepository.instance.createLift(lift);
-                Get.toNamed(TRoutes.activeLifts);
+                // Get.toNamed(TRoutes.activeLifts);
+                await controller.displayNearbyRides(
+                  source: source,
+                  destination: destination,
+                );
               },
-            )
+            ),
           ],
         ),
       ),

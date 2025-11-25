@@ -94,9 +94,15 @@ class LocationsController extends GetxController {
       }
 
       Position? position = await Geolocator.getLastKnownPosition();
+      if (position != null) {
+        print("using last known postion");
+      } else {
+        print("using latest postion");
+      }
       position ??= await Geolocator.getCurrentPosition();
 
       lastKnowPos = LatLng(position.latitude, position.longitude);
+
       return lastKnowPos;
     } catch (e) {
       print("Location fetch failed: $e");

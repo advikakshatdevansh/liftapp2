@@ -33,15 +33,15 @@ class ActiveLiftsController extends GetxController {
     }
   }
 
-  Future<void> addLift(LiftModel lift) async {
-    try {
-      await LiftRepository.instance.createLift(lift);
-      lifts.add(lift); // update in-memory cache
-    } catch (e) {
-      print('Error creating lift: $e');
-      rethrow;
-    }
-  }
+  // Future<void> addLift(LiftModel lift) async {
+  //   try {
+  //     await LiftRepository.instance.createLift(lift);
+  //     lifts.add(lift); // update in-memory cache
+  //   } catch (e) {
+  //     print('Error creating lift: $e');
+  //     rethrow;
+  //   }
+  // }
 
   /// Optional: clear cache
   void clearCache() {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../routes/app_routes.dart';
 import '../../../controllers/google_map_controller.dart';
 
 class PublishButton extends StatelessWidget {
@@ -101,29 +102,67 @@ class PublishButton extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               // Publish Button - Left aligned
-              SizedBox(
-                width: 200,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: onTap,
-                  style: ElevatedButton.styleFrom(
-                    // 1. Set the background color to BLACK
-                    backgroundColor: Colors.black,
-
-                    // 2. Set the text/icon color to WHITE
-                    foregroundColor: Colors.white,
-                    side: BorderSide.none,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              // Continue + Next Buttons Row
+              Row(
+                children: [
+                  // CONTINUE BUTTON
+                  Expanded(
+                    child: SizedBox(
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: onTap,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          "Continue",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                     ),
-                    elevation: 3,
                   ),
-                  child: const Text(
-                    "Continue",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              )
+
+                  const SizedBox(width: 12),
+
+                  // NEXT BUTTON (only shows when ready)
+                  if (controller.isListReady.value)
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (controller.isRide.value) {
+                              Get.toNamed(TRoutes.activeLifts);
+                            } else {
+                              Get.toNamed(TRoutes.activeLifts);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepPurple,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            "Next",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ],
           );
         }),
