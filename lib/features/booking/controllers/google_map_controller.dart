@@ -224,7 +224,7 @@ class CustomMapController extends GetxController {
 
     final encodedPolyline = data['routes'][0]['geometry'];
     distance.value = data['routes'][0]['distance'] / 1000.0;
-
+    print(encodedPolyline.toString().length);
     return decodePolyline(encodedPolyline);
   }
 
@@ -236,10 +236,10 @@ class CustomMapController extends GetxController {
         return 'bike';
       case TransportMode.transit:
         // OSRM doesn't directly support transit — fallback to driving
-        return 'car';
+        return 'driving';
       case TransportMode.driving:
       default:
-        return 'car';
+        return 'driving';
     }
   }
 
