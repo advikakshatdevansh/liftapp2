@@ -27,7 +27,7 @@ class PublishButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: Obx(() {
-          final distance = controller.distance;
+          final distance = controller.distance.value;
           final estimatedCost = (distance * petrolPricePerKm).toStringAsFixed(
             2,
           );
@@ -61,12 +61,12 @@ class PublishButton extends StatelessWidget {
                       children: [
                         const Icon(Icons.route, size: 18, color: Colors.blue),
                         const SizedBox(width: 6),
-
                         Text(
                           '${distance.toStringAsFixed(2)} km',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
+                            color: Colors.red,
                           ),
                         ),
                       ],

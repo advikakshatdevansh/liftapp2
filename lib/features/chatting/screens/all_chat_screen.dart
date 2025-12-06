@@ -47,6 +47,7 @@ class AllChatsScreen extends StatelessWidget {
                     chatId: chat.id,
                     currentUserId: controller.currentUserId,
                     otherUserId: otherUserId,
+                    otherUserName: name,
                   ),
                 );
               },

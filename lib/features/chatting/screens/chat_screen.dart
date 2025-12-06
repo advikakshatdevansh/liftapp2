@@ -6,12 +6,14 @@ class ChatScreen extends StatelessWidget {
   final String chatId;
   final String currentUserId;
   final String otherUserId;
+  final String otherUserName;
 
   const ChatScreen({
     super.key,
     required this.chatId,
     required this.currentUserId,
     required this.otherUserId,
+    required this.otherUserName,
   });
 
   @override
@@ -20,7 +22,7 @@ class ChatScreen extends StatelessWidget {
     final textController = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(title: Text("Chat with $otherUserId")),
+      appBar: AppBar(title: Text("Chat with $otherUserName")),
       body: Column(
         children: [
           Expanded(

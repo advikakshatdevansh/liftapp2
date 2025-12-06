@@ -28,6 +28,7 @@ class CustomMap extends StatelessWidget {
         onMapCreated: controller.onMapCreated,
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
+        zoomControlsEnabled: false,
       ),
     );
   }

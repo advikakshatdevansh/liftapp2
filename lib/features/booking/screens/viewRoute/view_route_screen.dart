@@ -13,7 +13,6 @@ import '../../controllers/google_map_controller.dart';
 import 'widgets/google_map_widget.dart';
 import 'widgets/select_vehicle_widget.dart';
 
-
 class ViewRoute extends StatelessWidget {
   const ViewRoute({
     super.key,
@@ -33,9 +32,7 @@ class ViewRoute extends StatelessWidget {
     CustomMapController controller = Get.put(CustomMapController());
 
     // Define primary color for buttons
-    final primaryColor = Theme
-        .of(context)
-        .primaryColor;
+    final primaryColor = Theme.of(context).primaryColor;
 
     return Scaffold(
       appBar: AppBar(
@@ -76,8 +73,8 @@ class ViewRoute extends StatelessWidget {
               ],
             ),
           ),
-          // --- END CUSTOM ZOOM BUTTONS ---
 
+          // --- END CUSTOM ZOOM BUTTONS ---
           Positioned(
             bottom: 0,
             left: 0,
@@ -96,8 +93,10 @@ class ViewRoute extends StatelessWidget {
   }
 
   // ... (rest of the _showRideChoiceModal and _showSeatSelectionModal methods remain unchanged)
-  void _showRideChoiceModal(BuildContext context,
-      CustomMapController controller,) {
+  void _showRideChoiceModal(
+    BuildContext context,
+    CustomMapController controller,
+  ) {
     // RideRepository.instance.addDummyRides();
     Get.bottomSheet(
       Container(
@@ -170,40 +169,37 @@ class ViewRoute extends StatelessWidget {
     );
   }
 
-  void _showSeatSelectionModal(BuildContext context,
-      CustomMapController controller,
-      // Note: Assuming 'source', 'destination', 'sourcename', 'destinationname',
-      // 'UserRepository', 'AuthenticationRepository', 'RideRepository', and 'TRoutes'
-      // are available from the parent ViewRoute class scope.
-      ) {
-    int selectedSeats = 1;
+  void _showSeatSelectionModal(
+    BuildContext context,
+    CustomMapController controller,
+  ) {
+    int selectedSeats = 1; // default selected seat
 
     Get.bottomSheet(
       StatefulBuilder(
         builder: (context, setState) {
-          // Get the primary color dynamically for modern styling
           final primaryColor = Theme.of(context).primaryColor;
 
           return Container(
-            // The container background outside the modal (usually transparent or theme color)
-            color: Theme.of(context).scaffoldBackgroundColor,
-            padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 20),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(25),
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15), // Slightly stronger shadow
+                  color: Colors.black.withOpacity(0.15),
                   blurRadius: 15,
                   offset: const Offset(0, -6),
                 ),
               ],
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // 1. Handle Bar (Drag Indicator)
+                // Drag handle
                 Center(
                   child: Container(
                     width: 50,
@@ -216,65 +212,63 @@ class ViewRoute extends StatelessWidget {
                   ),
                 ),
 
-                // 2. Question Text
+                // Title
                 const Text(
                   "How many seats are available?",
                   style: TextStyle(
-                      fontSize: 19, fontWeight: FontWeight.w700, color: Colors.black87),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 30), // Increased spacing for the selection area
+                const SizedBox(height: 20),
 
-                // 3. Seat Selection Row (Modern Look)
+                // Seat selection row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(4, (index) {
-                    int seat = index + 1;
-                    bool isSelected = selectedSeats == seat;
+                    final seat = index + 1;
+                    final isSelected = seat == selectedSeats;
 
                     return GestureDetector(
-                      onTap: () {
-                        setState(() => selectedSeats = seat);
-                      },
-                      child: AnimatedContainer( // Use AnimatedContainer for smooth transitions
+                      onTap: () => setState(() => selectedSeats = seat),
+                      child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeOut,
-                        margin: const EdgeInsets.symmetric(horizontal: 6), // Reduced margin slightly
-                        width: 60, // Slightly wider buttons
-                        height: 70, // Taller buttons
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? primaryColor // Use the strong primary color when selected
-                              : Colors.grey.shade50, // Very light background when unselected
-                          borderRadius: BorderRadius.circular(15), // Slightly larger radius
-                          border: isSelected ? null : Border.all(color: Colors.grey.shade200, width: 1),
+                              ? primaryColor
+                              : Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(12),
                           boxShadow: isSelected
                               ? [
-                            BoxShadow(
-                              color: primaryColor.withOpacity(0.4),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ]
-                              : [], // No shadow when unselected
+                                  BoxShadow(
+                                    color: primaryColor.withOpacity(0.4),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ]
+                              : [],
                         ),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Icon to represent a seat
                             Icon(
                               Icons.event_seat_rounded,
-                              size: 20,
                               color: isSelected ? Colors.white : Colors.black54,
+                              size: 24,
                             ),
                             const SizedBox(height: 4),
-                            // Seat Number
                             Text(
                               seat.toString(),
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: isSelected ? Colors.white : Colors.black87,
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.black87,
                               ),
                             ),
                           ],
@@ -284,34 +278,25 @@ class ViewRoute extends StatelessWidget {
                   }),
                 ),
 
-                const SizedBox(height: 40), // More space before the main button
+                const SizedBox(height: 30),
 
-                // 4. Publish Button (Main Action)
+                // Publish Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor, // Use Primary color for the main action
+                    backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
-                    minimumSize: const Size(double.infinity, 56),
+                    minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    elevation: 5,
                   ),
                   onPressed: () async {
                     Navigator.pop(context); // close modal
 
-                    // --- Business Logic (Unchanged) ---
-                    final user = await UserRepository.instance.getUserById(
-                      AuthenticationRepository.instance.getUserID,
-                    );
-
                     await RideRepository.instance.createRide(
                       userId: AuthenticationRepository.instance.getUserID,
-                      source: LatLng(source.latitude, source.longitude),
-                      destination: LatLng(
-                        destination.latitude,
-                        destination.longitude,
-                      ),
+                      source: source,
+                      destination: destination,
                       sourceName: sourcename,
                       destinationName: destinationname,
                       distanceKm: controller.distance.value,
@@ -338,7 +323,7 @@ class ViewRoute extends StatelessWidget {
                   },
                   child: const Text(
                     "Publish Ride",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -346,5 +331,7 @@ class ViewRoute extends StatelessWidget {
           );
         },
       ),
-    );  }
+      isScrollControlled: true,
+    );
+  }
 }

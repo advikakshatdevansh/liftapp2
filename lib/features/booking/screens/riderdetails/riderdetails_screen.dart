@@ -167,6 +167,7 @@ class RiderDetailsScreen extends StatelessWidget {
                               chatId: chatId,
                               currentUserId: currentUserId,
                               otherUserId: ride.userId,
+                              otherUserName: ride.riderName,
                             ),
                           );
                         },
