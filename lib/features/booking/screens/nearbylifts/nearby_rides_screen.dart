@@ -48,7 +48,6 @@ class NearbyRidesScreen extends StatelessWidget {
 
           return ListView.builder(
             itemCount: rides.length,
-            padding: const EdgeInsets.all(12),
             itemBuilder: (context, index) {
               final ride = rides[index];
               final riderName = ride.userId;
@@ -67,6 +66,7 @@ class NearbyRidesScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.center, // Align items vertically in the center
                         children: [
                           const CircleAvatar(
                             radius: 24,
@@ -81,11 +81,21 @@ class NearbyRidesScreen extends StatelessWidget {
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600,
                               ),
+                              // Ensures long names wrap or truncate nicely
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          const SizedBox(width: 8), // Add a small space between name and chip
                           Chip(
                             label: Text("$seats seats"),
-                            backgroundColor: Colors.green.shade100,
+                            backgroundColor: Colors.white,
+                            // Use labelStyle to control the text appearance (color, font size, etc.)
+                            labelStyle: const TextStyle(
+                              color: Colors.black, // <-- Set the text color here
+                            ),
+                            side: BorderSide.none,
+                            elevation: 0,
                           ),
                         ],
                       ),
@@ -110,7 +120,7 @@ class NearbyRidesScreen extends StatelessWidget {
                         ],
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 14),
 
                       SizedBox(
                         width: double.infinity,
@@ -122,6 +132,8 @@ class NearbyRidesScreen extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.deepPurple,
                             foregroundColor: Colors.white,
+                            side: BorderSide.none,
+                            elevation: 0,
                           ),
                           child: const Text("Request Lift"),
                         ),
