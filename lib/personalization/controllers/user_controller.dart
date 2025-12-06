@@ -1,3 +1,4 @@
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:liftapp2/utils/popups/exports.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ import '../../utils/constants/enums.dart';
 import '../../utils/constants/image_strings.dart';
 import '../../utils/constants/sizes.dart';
 import '../../utils/helpers/network_manager.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
 // import '../screens/profile/re_authenticate_user_login_form.dart';
 
 class UserController extends GetxController {
@@ -176,38 +178,51 @@ class UserController extends GetxController {
     }
   }
 
-  uploadUserProfilePicture() async {
+  Future<void> uploadUserProfilePicture() async {
     try {
-      final image = await ImagePicker().pickImage(
+      final picked = await ImagePicker().pickImage(
         source: ImageSource.gallery,
         imageQuality: 70,
         maxHeight: 512,
         maxWidth: 512,
       );
-      if (image != null) {
-        imageUploading.value = true;
-        final uploadedImage = await userRepository.uploadImage(
-          'Users/Images/Profile/',
-          image,
-        );
-        profileImageUrl.value = uploadedImage;
-        Map<String, dynamic> newImage = {'profilePicture': uploadedImage};
-        await userRepository.updateSingleField(newImage);
-        user.value.profilePicture = uploadedImage;
-        user.refresh();
 
-        imageUploading.value = false;
-        TLoaders.successSnackBar(
-          title: 'Congratulations',
-          message: 'Your Profile Image has been updated!',
-        );
-      }
+      if (picked == null) return;
+
+      imageUploading.value = true;
+
+      /// CLOUDINARY CONFIG
+      final cloudinary = CloudinaryPublic(
+        'liftshare',
+        'pfp-app', // ← replace
+        cache: true,
+      );
+
+      /// UPLOAD TO CLOUDINARY
+      CloudinaryResponse response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(picked.path, folder: "Users/Profile"),
+      );
+
+      final uploadedUrl = response.secureUrl;
+
+      /// SAVE URL IN FIRESTORE
+      Map<String, dynamic> newImage = {'profilePicture': uploadedUrl};
+      await userRepository.updateSingleField(newImage);
+
+      /// UPDATE LOCAL USER MODEL
+      user.value.profilePicture = uploadedUrl;
+      user.refresh();
+      profileImageUrl.value = uploadedUrl;
+
+      imageUploading.value = false;
+
+      TLoaders.successSnackBar(
+        title: 'Congratulations',
+        message: 'Your profile image has been updated!',
+      );
     } catch (e) {
       imageUploading.value = false;
-      TLoaders.errorSnackBar(
-        title: 'OhSnap',
-        message: 'Something went wrong: $e',
-      );
+      TLoaders.errorSnackBar(title: 'Oh Snap!', message: '$e');
     }
   }
 
@@ -334,7 +349,7 @@ class UserController extends GetxController {
     }
   }
 
-  logout() {
+  void logout() {
     try {
       Get.defaultDialog(
         contentPadding: const EdgeInsets.all(TSizes.md),

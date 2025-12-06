@@ -17,8 +17,14 @@ class UpdateProfileScreen extends StatelessWidget {
     controller.assignDataToProfile();
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () => Get.back(), icon: const Icon(LineAwesomeIcons.angle_left_solid)),
-        title: Text(TTexts.tEditProfile, style: Theme.of(context).textTheme.headlineMedium),
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: const Icon(LineAwesomeIcons.angle_left_solid),
+        ),
+        title: Text(
+          TTexts.tEditProfile,
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -32,7 +38,7 @@ class UpdateProfileScreen extends StatelessWidget {
               /// -- Form
               ProfileFormScreen(),
             ],
-          )
+          ),
         ),
       ),
     );
