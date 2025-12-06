@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../routes/app_routes.dart';
 import '../../../controllers/google_map_controller.dart';
+import '../../nearbylifts/nearby_rides_screen.dart';
 
 class PublishButton extends StatelessWidget {
-  const PublishButton({super.key, required this.onTap});
+  const PublishButton({
+    super.key,
+    required this.onTap,
+    required this.source,
+    required this.destination,
+  });
+
+  final LatLng source;
+  final LatLng destination;
   final VoidCallback onTap;
 
   @override
@@ -139,9 +149,13 @@ class PublishButton extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             if (controller.isRide.value) {
-                              Get.toNamed(TRoutes.activeLifts);
                             } else {
-                              Get.toNamed(TRoutes.activeLifts);
+                              Get.to(
+                                () => NearbyRidesScreen(
+                                  source: source,
+                                  destination: destination,
+                                ),
+                              );
                             }
                           },
                           style: ElevatedButton.styleFrom(

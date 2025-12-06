@@ -38,6 +38,8 @@ class ViewRoute extends StatelessWidget {
           left: 0,
           right: 0,
           child: PublishButton(
+            source: source,
+            destination: destination,
             onTap: () async {
               _showRideChoiceModal(context, controller);
             },

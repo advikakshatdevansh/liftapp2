@@ -54,6 +54,25 @@ class UserRepository extends GetxController {
     }
   }
 
+  Future<UserModel> getUserById(String userId) async {
+    try {
+      final documentSnapshot = await _db.collection("Users").doc(userId).get();
+      if (documentSnapshot.exists) {
+        return UserModel.fromDocSnapshot(documentSnapshot);
+      } else {
+        return UserModel.empty();
+      }
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
   Future<String> uploadImage(String path, XFile image) async {
     try {
       final ref = _firebaseStorage.ref(path).child(image.name);
