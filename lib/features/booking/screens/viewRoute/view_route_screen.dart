@@ -162,7 +162,6 @@ class ViewRoute extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Seat Selector
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(4, (index) {
@@ -200,7 +199,7 @@ class ViewRoute extends StatelessWidget {
                     minimumSize: const Size(double.infinity, 50),
                   ),
                   onPressed: () async {
-                    Navigator.pop(context);
+                    Navigator.pop(context); // close modal
 
                     final user = await UserRepository.instance.getUserById(
                       AuthenticationRepository.instance.getUserID,
@@ -217,13 +216,26 @@ class ViewRoute extends StatelessWidget {
                       destinationName: destinationname,
                       distanceKm: controller.distance.value,
                       status: "active",
-                      seatsAvailable: selectedSeats, // 👈 SET SEATS HERE
+                      seatsAvailable: selectedSeats,
                     );
 
                     await controller.displayNearbyLifts(
                       source: source,
                       destination: destination,
                     );
+
+                    // ✅ NOW show snackbar + navigate
+                    Get.snackbar(
+                      "Ride Published",
+                      "Your ride has been successfully created!",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
+                      margin: const EdgeInsets.all(16),
+                      duration: const Duration(seconds: 2),
+                    );
+
+                    Get.offAllNamed(TRoutes.home);
                   },
                   child: const Text(
                     "Publish Ride",
@@ -236,18 +248,5 @@ class ViewRoute extends StatelessWidget {
         },
       ),
     );
-
-    Get.snackbar(
-      "Ride Published",
-      "Your ride has been successfully created!",
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      margin: const EdgeInsets.all(16),
-      duration: const Duration(seconds: 2),
-    );
-
-    // 👇 REDIRECT TO HOME SCREEN
-    Get.offAllNamed(TRoutes.home);
   }
 }
