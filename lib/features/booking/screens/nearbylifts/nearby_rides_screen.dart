@@ -50,7 +50,7 @@ class NearbyRidesScreen extends StatelessWidget {
             itemCount: rides.length,
             itemBuilder: (context, index) {
               final ride = rides[index];
-              final riderName = ride.userId;
+              final riderName = ride.riderName;
               final seats = ride.seatsAvailable;
               final distance = ride.distanceKm;
               final price = (distance * 6).toStringAsFixed(2);
@@ -66,7 +66,8 @@ class NearbyRidesScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.center, // Align items vertically in the center
+                        crossAxisAlignment: CrossAxisAlignment
+                            .center, // Align items vertically in the center
                         children: [
                           const CircleAvatar(
                             radius: 24,
@@ -86,13 +87,16 @@ class NearbyRidesScreen extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(width: 8), // Add a small space between name and chip
+                          const SizedBox(
+                            width: 8,
+                          ), // Add a small space between name and chip
                           Chip(
                             label: Text("$seats seats"),
                             backgroundColor: Colors.white,
                             // Use labelStyle to control the text appearance (color, font size, etc.)
                             labelStyle: const TextStyle(
-                              color: Colors.black, // <-- Set the text color here
+                              color:
+                                  Colors.black, // <-- Set the text color here
                             ),
                             side: BorderSide.none,
                             elevation: 0,

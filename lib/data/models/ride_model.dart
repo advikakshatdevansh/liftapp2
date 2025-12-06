@@ -5,6 +5,7 @@ class RideModel {
   final String userId;
   final Map<String, dynamic> source;
   final Map<String, dynamic> destination;
+  final String riderName;
   final String sourceName;
   final String destinationName;
   final double distanceKm;
@@ -16,6 +17,7 @@ class RideModel {
     required this.userId,
     required this.source,
     required this.destination,
+    required this.riderName,
     required this.sourceName,
     required this.destinationName,
     required this.distanceKm,
@@ -29,6 +31,7 @@ class RideModel {
     "userId": userId,
     "source": source,
     "destination": destination,
+    "riderName": riderName,
     "sourceName": sourceName,
     "destinationName": destinationName,
     "distanceKm": distanceKm,
@@ -46,6 +49,7 @@ class RideModel {
       userId: data['userId'] ?? '',
       source: Map<String, dynamic>.from(data['source'] ?? {}),
       destination: Map<String, dynamic>.from(data['destination'] ?? {}),
+      riderName: data['riderName'] ?? '',
       sourceName: data['sourceName'] ?? '',
       destinationName: data['destinationName'] ?? '',
       distanceKm: (data['distanceKm'] as num?)?.toDouble() ?? 0.0,
@@ -66,6 +70,7 @@ class RideModel {
       "geopoint": const GeoPoint(0, 0),
       "geohash": GeoFirePoint(const GeoPoint(0, 0)).geohash,
     },
+    riderName: '',
     sourceName: '',
     destinationName: '',
     distanceKm: 0,
@@ -79,6 +84,7 @@ class RideModel {
     required String userId,
     required GeoPoint sourcePoint,
     required GeoPoint destinationPoint,
+    required String riderName,
     required String sourceName,
     required String destinationName,
     required double distanceKm,
@@ -89,6 +95,7 @@ class RideModel {
       userId: userId,
       source: GeoFirePoint(sourcePoint).data,
       destination: GeoFirePoint(destinationPoint).data,
+      riderName: riderName,
       sourceName: sourceName,
       destinationName: destinationName,
       distanceKm: distanceKm,

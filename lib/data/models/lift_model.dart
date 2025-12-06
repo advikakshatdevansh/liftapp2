@@ -7,6 +7,7 @@ class LiftModel {
   final Map<String, dynamic> destination; // contains geopoint + geohash
   final String sourceName;
   final String destinationName;
+  final String lifterName;
   final double distanceKm;
   final DateTime createdAt;
   final String status;
@@ -15,6 +16,7 @@ class LiftModel {
     required this.userId,
     required this.source,
     required this.destination,
+    required this.lifterName,
     required this.sourceName,
     required this.destinationName,
     required this.distanceKm,
@@ -26,6 +28,7 @@ class LiftModel {
     "userId": userId,
     "source": source,
     "destination": destination,
+    "lifterName": lifterName,
     "sourceName": sourceName,
     "destinationName": destinationName,
     "distanceKm": distanceKm,
@@ -39,12 +42,13 @@ class LiftModel {
 
     return LiftModel(
       userId: data['userId'] ?? '',
-      source: Map<String, dynamic>.from(data['source']),
-      destination: Map<String, dynamic>.from(data['destination']),
+      source: Map<String, dynamic>.from(data['source'] ?? {}),
+      destination: Map<String, dynamic>.from(data['destination'] ?? {}),
+      lifterName: data['lifterName'] ?? '',
       sourceName: data['sourceName'] ?? '',
       destinationName: data['destinationName'] ?? '',
-      distanceKm: (data['distanceKm'] as num).toDouble(),
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      distanceKm: (data['distanceKm'] as num?)?.toDouble() ?? 0.0,
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       status: data['status'] ?? '',
     );
   }
@@ -60,6 +64,7 @@ class LiftModel {
       "geopoint": const GeoPoint(0, 0),
       "geohash": GeoFirePoint(const GeoPoint(0, 0)).geohash,
     },
+    lifterName: '',
     sourceName: '',
     destinationName: '',
     distanceKm: 0,
@@ -74,6 +79,7 @@ class LiftModel {
     required GeoPoint destinationPoint,
     required String sourceName,
     required String destinationName,
+    required String lifterName,
     required double distanceKm,
     required String status,
   }) {
@@ -83,6 +89,7 @@ class LiftModel {
       destination: GeoFirePoint(destinationPoint).data,
       sourceName: sourceName,
       destinationName: destinationName,
+      lifterName: lifterName,
       distanceKm: distanceKm,
       createdAt: DateTime.now(),
       status: status,

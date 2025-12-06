@@ -86,6 +86,7 @@ class ViewRoute extends StatelessWidget {
                 Navigator.pop(context);
                 final ride = RideRepository.instance.createRide(
                   userId: AuthenticationRepository.instance.getUserID,
+                  riderName: AuthenticationRepository.instance.getDisplayName,
                   source: LatLng(source.latitude, source.longitude),
                   destination: LatLng(
                     destination.latitude,
@@ -118,6 +119,7 @@ class ViewRoute extends StatelessWidget {
                 Navigator.pop(context);
                 final lift = await LiftRepository.instance.createLift(
                   userId: AuthenticationRepository.instance.getUserID,
+                  lifterName: AuthenticationRepository.instance.getDisplayName,
                   source: LatLng(source.latitude, source.longitude),
                   destination: LatLng(
                     destination.latitude,
