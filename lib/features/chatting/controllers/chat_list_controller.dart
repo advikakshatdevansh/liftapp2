@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:liftapp2/data/repository/notifications/authrepository.dart';
 import '../../../data/models/chat_model.dart';
 
 class ChatListController extends GetxController {
@@ -7,8 +8,9 @@ class ChatListController extends GetxController {
   final userNames = <String, String>{}.obs; // userId → fullName
   final userPhotos = <String, String>{}.obs; // userId → profilePicture
 
-  final currentUserId =
-      "zJGH7iwQeOWQunMCOry5ZYFhqM2"; // Replace with your Auth user ID
+  final currentUserId = AuthenticationRepository
+      .instance
+      .getUserID; // Replace with your Auth user ID
 
   @override
   void onInit() {
