@@ -29,7 +29,7 @@ class LocationTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hint,
         prefixIcon: Icon(icon),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
       ),
       validator: (_) {
         if (!field.isValid.value) {
@@ -69,15 +69,15 @@ class LocationInputField extends StatelessWidget {
           color: Colors.grey.shade600,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           borderSide: const BorderSide(color: Colors.blue, width: 2),
         ),
         filled: true,

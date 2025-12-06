@@ -12,8 +12,12 @@ class LocationFormWidget extends StatelessWidget {
     final controller = Get.put(LocationsController());
 
     return Container(
-      padding: const EdgeInsets.only(top: TSizes.xl - 15, bottom: TSizes.xl),
-      child: Form(
+      padding: const EdgeInsets.only(
+        top: TSizes.xl - 16,
+        bottom: TSizes.xl,
+        left: TSizes.xs,   // Assuming TSizes.defaultSpace is your standard horizontal padding
+        right: TSizes.xs,  // Add padding to the right
+      ),      child: Form(
         key: controller.locationsFormKey,
         child: Column(
           children: [
@@ -36,18 +40,10 @@ class LocationFormWidget extends StatelessWidget {
               autofocus: true,
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
 
             // Map Selection Button
-            TextButton.icon(
-              onPressed: controller.openMap,
-              icon: const Icon(Icons.map),
-              label: const Text('Select On Map'),
-              style: TextButton.styleFrom(
-                // Set the color for the text and icon
-                foregroundColor: Colors.white, // Change 'Colors.blue' to your desired color
-              ),
-            ),
+
 
             // const SizedBox(height: 8),
 
@@ -57,9 +53,9 @@ class LocationFormWidget extends StatelessWidget {
 
               return Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.black,
                   border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.1),
@@ -78,7 +74,7 @@ class LocationFormWidget extends StatelessWidget {
                     return ListTile(
                       leading: const Icon(
                         Icons.location_on,
-                        color: Colors.grey,
+                        color: Colors.white,
                       ),
                       title: Text(
                         prediction["display_name"] ?? 'Unknown place',
@@ -93,7 +89,18 @@ class LocationFormWidget extends StatelessWidget {
               );
             }),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
+            TextButton.icon(
+              onPressed: controller.openMap,
+              icon: const Icon(Icons.map),
+              label: const Text('Select On Map'),
+              style: TextButton.styleFrom(
+                // Set the color for the text and icon
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black, // Change 'Colors.blue' to your desired color
+              ),
+            ),
+            const SizedBox(height: 8),
 
             // Submit Button
             SizedBox(
