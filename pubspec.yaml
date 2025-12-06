@@ -26,13 +26,13 @@ dependencies:
   flutter_otp_text_field: ^1.1.1
 
   ## -- FIREBASE PACKAGES
-  firebase_auth: ^6.1.0
-  firebase_core: ^4.1.0
+  firebase_auth: ^6.1.2
+  firebase_core: ^4.2.1
   google_sign_in: ^6.3.0
-  cloud_firestore: ^6.0.0
-  firebase_storage: ^13.0.2
-  firebase_messaging: ^16.0.2
-  firebase_crashlytics: ^5.0.2
+  cloud_firestore: ^6.1.0
+  firebase_storage: ^13.0.4
+  firebase_messaging: ^16.0.4
+  firebase_crashlytics: ^5.0.0
 
   cloudinary_public: ^0.23.1
 
@@ -64,7 +64,7 @@ dependencies:
   readmore: ^3.0.0
   image_picker: ^1.1.2
   url_launcher: ^6.3.1
-  image_cropper: ^11.0.0
+  image_cropper: ^8.1.0
   carousel_slider: ^5.0.0
   connectivity_plus: ^7.0.0
   country_code_picker: ^3.3.0
