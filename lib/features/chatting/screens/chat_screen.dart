@@ -1,6 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+// Assuming you have these models/controllers
 import '../controllers/chat_controller.dart';
+import '../../../data/models/message_model.dart'; // Assuming you have a MessageModel
+import 'package:intl/intl.dart'; // Add this for proper time formatting
+
+// --- Theme Colors ---
+const Color kDarkBackground = Colors.transparent; // Primary dark background
+const Color kDarkAppBar = Color(0xFF212C36);     // Slightly lighter dark for App Bar/Cards
+const Color kSenderBubble = Color(0xFF51B06C);    // Telegram sender green/blue
+const Color kReceiverBubble = Color(0xFF334252);  // Telegram receiver deep blue-grey
+const Color kInputBackground = Color(0xFF23303D); // Input field background
+
+// Custom Painter for the chat bubble "tail"
+class ChatBubblePainter extends CustomPainter {
+  final Color color;
+  final bool isSender;
+
+  ChatBubblePainter(this.color, this.isSender);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final RRect rRect = RRect.fromLTRBAndCorners(
+      0, 0, size.width, size.height,
+      topLeft: const Radius.circular(20),
+      topRight: const Radius.circular(20),
+      // Adjusted corner radii for the Telegram style
+      bottomLeft: isSender ? const Radius.circular(20) : const Radius.circular(4),
+      bottomRight: isSender ? const Radius.circular(4) : const Radius.circular(12),
+    );
+
+    final Paint paint = Paint()..color = color;
+    canvas.drawRRect(rRect, paint);
+
+    // Draw the "tail" triangle
+    final Path path = Path();
+    if (isSender) {
+      path.moveTo(size.width, size.height - 12);
+      path.lineTo(size.width, size.height);
+      path.lineTo(size.width - 12, size.height);
+    } else {
+      path.moveTo(0, size.height - 12);
+      path.lineTo(0, size.height);
+      path.lineTo(12, size.height);
+    }
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// --- ChatScreen Widget ---
 
 class ChatScreen extends StatelessWidget {
   final String chatId;
@@ -22,63 +74,212 @@ class ChatScreen extends StatelessWidget {
     final textController = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(title: Text("Chat with $otherUserName")),
+      backgroundColor: kDarkBackground, // Primary Dark Background
+      appBar: AppBar(
+        title: Text(
+          otherUserName,
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: kDarkAppBar, // Darker App Bar
+        foregroundColor: Colors.white,
+
+      ),
       body: Column(
         children: [
+          // Message List
           Expanded(
             child: Obx(
-              () => ListView.builder(
-                reverse: true,
+                  () => ListView.builder(
+                reverse: true, // Show most recent at the bottom
                 itemCount: controller.messages.length,
+                padding: const EdgeInsets.only(top: 8),
                 itemBuilder: (context, index) {
                   final msg = controller.messages[index];
                   final isMine = msg.senderId == currentUserId;
-
-                  return Align(
-                    alignment: isMine
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: isMine ? Colors.blueAccent : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        msg.text,
-                        style: TextStyle(
-                          color: isMine ? Colors.white : Colors.black,
-                        ),
-                      ),
-                    ),
-                  );
+                  return _buildMessageBubble(msg, isMine, controller);
                 },
               ),
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: textController,
-                    decoration: InputDecoration(hintText: "Type a message..."),
-                  ),
+          // Input Section
+          _buildChatInput(controller, textController, currentUserId),
+        ],
+      ),
+    );
+  }
+
+  // Helper widget for Message Bubble
+  Widget _buildMessageBubble(
+      MessageModel msg, bool isMine, ChatController controller) {
+    final Color bubbleColor = isMine ? kSenderBubble : kReceiverBubble;
+    final Alignment alignment =
+    isMine ? Alignment.centerRight : Alignment.centerLeft;
+
+    // Use the controller to format the timestamp
+    final String time =
+    controller.formatTime(msg.timestamp); // Assuming formatTime exists
+
+    return Align(
+      alignment: alignment,
+      child: Container(
+        // Limits the maximum width of the bubble
+        constraints: BoxConstraints(maxWidth: Get.width * 0.8),
+        margin: EdgeInsets.only(
+          top: 4,
+          bottom: 4,
+          // Adjusted margins to account for the bubble tail positioning
+          left: isMine ? 40 : 8,
+          right: isMine ? 8 : 40,
+        ),
+        child: Stack(
+          // Keep clipBehavior: Clip.none to allow the tail to draw outside the boundary
+          clipBehavior: Clip.none,
+          children: [
+            // VITAL FIX: Keep IntrinsicWidth for block size fit
+            IntrinsicWidth(
+              child: Container(
+                // Padding reduced to allow time/status to dynamically define the width
+                // Increased bottom padding slightly to give time more space from the edge
+                padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
+                decoration: BoxDecoration(
+                  color: bubbleColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  // Use CrossAxisAlignment.end to align the time/status to the bottom
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 1. Message Text: MUST be wrapped in Expanded to allow wrapping
+                    Expanded(
+                      // Use RichText to combine the message text with a tiny invisible spacer
+                      // to help push the time/status out of the way when the text is long.
+                      // A simple Text widget works better for plain text display.
+                      child: Padding(
+                        // Add a small margin to the right of the text
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Text(
+                          msg.text,
+                          style: const TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                    ),
+
+                    // 2. Time and Status Cluster: Pushed to the far right of the last line
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0), // Adjust alignment vertically
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            time,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.white70,
+                            ),
+                          ),
+                          if (isMine) ...[
+                            const SizedBox(width: 4),
+                            const Icon(
+                              Icons.done_all,
+                              size: 14,
+                              color: Colors.blueAccent,
+                            ),
+                          ],
+                          // Keep a tiny bit of final right padding
+                          const SizedBox(width: 4),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.send),
+            ),
+
+            // CustomPaint for the message tail/pointer
+
+          ],
+        ),
+      ),
+    );  }
+
+  // Helper widget for Chat Input
+  Widget _buildChatInput(
+      ChatController controller, TextEditingController textController, String currentUserId) {
+    return Container(
+      padding: const EdgeInsets.only(left: 12, right: 12, bottom: 25, top: 8),
+      color: Colors.transparent,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          // Text Input Field
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+                // FIX: Add a border using Border.all
+                border: Border.all(
+                  color: Colors.grey, // Choose a color for the border (e.g., subtle grey or white54 for dark theme)
+                  width: 1.0,         // Set the thickness of the border
+                ),
+              ),
+
+              child: Padding(
+                // This handles the space between the rounded container edge and the text
+                padding: const EdgeInsets.symmetric(horizontal: 8.0), // Keep clean horizontal margin
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: textController,
+                        minLines: 1,
+                        maxLines: 3,
+                        keyboardType: TextInputType.multiline,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: const InputDecoration(
+                          hintText: "Message",
+                          hintStyle: TextStyle(color: Colors.white54),
+
+                          // VITAL FIXES: Remove all border states
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none, // Removes the border when the field is focused
+                          enabledBorder: InputBorder.none, // Ensures consistency when the field is active but not focused
+
+                          isDense: true,
+                          contentPadding: EdgeInsets.fromLTRB(8, 10.0, 8, 10.0),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10.0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 4.0),
+            child: SizedBox(
+              // Define a custom, circular size (e.g., 40x40)
+              width: 40.0,
+              height: 40.0,
+              child: FloatingActionButton(
+                // REMOVED: mini: true
+                backgroundColor: kSenderBubble,
+                foregroundColor: Colors.white,
                 onPressed: () {
                   final msg = textController.text.trim();
                   if (msg.isNotEmpty) {
                     controller.sendMessage(msg, currentUserId);
                     textController.clear();
+                  } else {
+                    // Handle voice message recording if text is empty
                   }
                 },
+                // VITAL: Increased Icon size for better visual fullness
+                child: const Icon(Icons.send, size: 24),
               ),
-            ],
+            ),
           ),
         ],
       ),
