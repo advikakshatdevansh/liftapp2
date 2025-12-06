@@ -63,4 +63,38 @@ class ChatListController extends GetxController {
   String getOtherUserPhoto(String userId) {
     return userPhotos[userId] ?? "";
   }
+
+  Future<String> createOrGetChat(String user1, String user2) async {
+    final chatQuery = await FirebaseFirestore.instance
+        .collection('Chats')
+        .where('participants', arrayContains: user1)
+        .get();
+
+    // Check if chat exists
+    for (var doc in chatQuery.docs) {
+      List participants = doc['participants'];
+      if (participants.contains(user2)) {
+        return doc.id; // chat already exists
+      }
+    }
+
+    // Create new chat
+    final newChatRef = FirebaseFirestore.instance.collection('Chats').doc();
+
+    await newChatRef.set({
+      'participants': [user1, user2],
+      'lastMessage': 'Hi',
+      'lastMessageSenderId': user1,
+      'lastMessageTime': FieldValue.serverTimestamp(),
+    });
+
+    // Send first hi message
+    await newChatRef.collection('messages').add({
+      'senderId': user1,
+      'text': 'Hi',
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    return newChatRef.id;
+  }
 }

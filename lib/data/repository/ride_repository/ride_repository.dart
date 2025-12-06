@@ -8,6 +8,7 @@ import '../../../utils/exceptions/format_exceptions.dart';
 import '../../../utils/exceptions/platform_exceptions.dart';
 import '../../models/ride_model.dart';
 import '../notifications/authrepository.dart';
+import '../user_repository/user_repository.dart';
 
 class RideRepository extends GetxController {
   static RideRepository get instance => Get.find();
@@ -18,7 +19,6 @@ class RideRepository extends GetxController {
     required String userId,
     required LatLng source,
     required LatLng destination,
-    required String riderName,
     required String sourceName,
     required String destinationName,
     required double distanceKm,
@@ -40,7 +40,7 @@ class RideRepository extends GetxController {
         destination: destGeo.data,
         sourceName: sourceName,
         destinationName: destinationName,
-        riderName: riderName,
+        riderName: (await UserRepository.instance.getUserById(userId)).fullName,
         distanceKm: distanceKm,
         createdAt: DateTime.now(),
         status: status,
