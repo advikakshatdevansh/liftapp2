@@ -13,6 +13,7 @@ import '../../controllers/google_map_controller.dart';
 import 'widgets/google_map_widget.dart';
 import 'widgets/select_vehicle_widget.dart';
 
+
 class ViewRoute extends StatelessWidget {
   const ViewRoute({
     super.key,
@@ -31,29 +32,70 @@ class ViewRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     CustomMapController controller = Get.put(CustomMapController());
 
-    return Stack(
-      children: [
-        CustomMap(source: source, destination: destination),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: PublishButton(
-            source: source,
-            destination: destination,
-            onTap: () async {
-              _showRideChoiceModal(context, controller);
-            },
+    // Define primary color for buttons
+    final primaryColor = Theme.of(context).primaryColor;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Confirm Route"),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: Stack(
+        children: [
+          CustomMap(source: source, destination: destination),
+
+          // --- ADD CUSTOM ZOOM BUTTONS HERE (Top Right) ---
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Column(
+              children: [
+                // Zoom In Button
+                FloatingActionButton.small(
+                  heroTag: 'zoom_in_route', // Unique hero tag required
+                  backgroundColor: Colors.white,
+                  foregroundColor: primaryColor,
+                  onPressed: () => controller.zoomIn(),
+                  child: const Icon(Icons.add),
+                ),
+                const SizedBox(height: 8),
+                // Zoom Out Button
+                FloatingActionButton.small(
+                  heroTag: 'zoom_out_route', // Unique hero tag required
+                  backgroundColor: Colors.white,
+                  foregroundColor: primaryColor,
+                  onPressed: () => controller.zoomOut(),
+                  child: const Icon(Icons.remove),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+          // --- END CUSTOM ZOOM BUTTONS ---
+
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: PublishButton(
+              source: source,
+              destination: destination,
+              onTap: () async {
+                _showRideChoiceModal(context, controller);
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
+  // ... (rest of the _showRideChoiceModal and _showSeatSelectionModal methods remain unchanged)
   void _showRideChoiceModal(
-    BuildContext context,
-    CustomMapController controller,
-  ) {
+      BuildContext context,
+      CustomMapController controller,
+      ) {
     // RideRepository.instance.addDummyRides();
     Get.bottomSheet(
       Container(
@@ -127,9 +169,9 @@ class ViewRoute extends StatelessWidget {
   }
 
   void _showSeatSelectionModal(
-    BuildContext context,
-    CustomMapController controller,
-  ) {
+      BuildContext context,
+      CustomMapController controller,
+      ) {
     int selectedSeats = 1;
 
     Get.bottomSheet(

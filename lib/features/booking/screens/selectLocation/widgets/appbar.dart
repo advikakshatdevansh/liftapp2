@@ -23,9 +23,9 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         Container(
-          margin: const EdgeInsets.only(right: 20, top: 7),
+          margin: const EdgeInsets.only(right: 20,),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(20),
             color: dark ? TColors.secondary : TColors.cardBackgroundColor,
           ),
           child: IconButton(

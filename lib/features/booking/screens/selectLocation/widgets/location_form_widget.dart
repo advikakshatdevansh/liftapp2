@@ -90,6 +90,7 @@ class LocationFormWidget extends StatelessWidget {
             }),
 
             const SizedBox(height: 8),
+
             TextButton.icon(
               onPressed: controller.openMap,
               icon: const Icon(Icons.map),
@@ -100,7 +101,8 @@ class LocationFormWidget extends StatelessWidget {
                 foregroundColor: Colors.black, // Change 'Colors.blue' to your desired color
               ),
             ),
-            const SizedBox(height: 8),
+
+            const SizedBox(height: 14),
 
             // Submit Button
             SizedBox(

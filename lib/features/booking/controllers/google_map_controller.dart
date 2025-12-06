@@ -22,6 +22,24 @@ class CustomMapController extends GetxController {
     mapController = controller;
   }
 
+  // --- NEW ZOOM FUNCTIONS ---
+  /// Zooms the map camera in by one step.
+  void zoomIn() {
+    // Uses the saved mapController to animate the camera
+    mapController.animateCamera(
+      CameraUpdate.zoomIn(),
+    );
+  }
+
+  /// Zooms the map camera out by one step.
+  void zoomOut() {
+    // Uses the saved mapController to animate the camera
+    mapController.animateCamera(
+      CameraUpdate.zoomOut(),
+    );
+  }
+  // --- END NEW ZOOM FUNCTIONS ---
+
   Future<void> addMarkers({
     required LatLng source,
     required LatLng destination,
@@ -38,35 +56,6 @@ class CustomMapController extends GetxController {
 
     // Adjust camera
     _moveCameraToFit(source, destination);
-
-    // // 🔍 Find nearby rides
-    // final List<LatLng> rides = await RideRepository.instance.getAllRideSources(
-    //   source: source,
-    //   destination: destination,
-    //   radius: 1,
-    // );
-    //
-    // if (rides.isNotEmpty) {
-    //   for (int i = 0; i < rides.length; i++) {
-    //     final ridePos = rides[i];
-    //     markers.add(
-    //       Marker(
-    //         markerId: MarkerId('ride_$i'),
-    //         position: ridePos,
-    //         icon: BitmapDescriptor.defaultMarkerWithHue(
-    //           BitmapDescriptor.hueGreen,
-    //         ),
-    //         infoWindow: InfoWindow(
-    //           title: 'Available Ride ${i + 1}',
-    //           snippet:
-    //               'Lat: ${ridePos.latitude.toStringAsFixed(4)}, Lng: ${ridePos.longitude.toStringAsFixed(4)}',
-    //         ),
-    //       ),
-    //     );
-    //   }
-    // }
-    //
-    // markers.refresh();
   }
 
   Future<void> displayNearbyRides({
@@ -108,7 +97,7 @@ class CustomMapController extends GetxController {
           infoWindow: InfoWindow(
             title: 'Available Ride ${i + 1}',
             snippet:
-                'Lat: ${ridePos.latitude.toStringAsFixed(4)}, Lng: ${ridePos.longitude.toStringAsFixed(4)}',
+            'Lat: ${ridePos.latitude.toStringAsFixed(4)}, Lng: ${ridePos.longitude.toStringAsFixed(4)}',
           ),
         ),
       );
@@ -159,7 +148,7 @@ class CustomMapController extends GetxController {
             infoWindow: InfoWindow(
               title: "Lift ${i + 1}",
               snippet:
-                  'Lat: ${liftPos.latitude.toStringAsFixed(4)}, Lng: ${liftPos.longitude.toStringAsFixed(4)}',
+              'Lat: ${liftPos.latitude.toStringAsFixed(4)}, Lng: ${liftPos.longitude.toStringAsFixed(4)}',
             ),
           ),
         );
@@ -204,9 +193,9 @@ class CustomMapController extends GetxController {
     // OSRM API endpoint (free, no API key)
     final url = Uri.parse(
       'https://router.project-osrm.org/route/v1/$profile/'
-      '${origin.longitude},${origin.latitude};'
-      '${destination.longitude},${destination.latitude}'
-      '?overview=full&geometries=polyline',
+          '${origin.longitude},${origin.latitude};'
+          '${destination.longitude},${destination.latitude}'
+          '?overview=full&geometries=polyline',
     );
 
     final response = await http.get(url);
@@ -235,7 +224,7 @@ class CustomMapController extends GetxController {
       case TransportMode.bicycling:
         return 'bike';
       case TransportMode.transit:
-        // OSRM doesn't directly support transit — fallback to driving
+      // OSRM doesn't directly support transit — fallback to driving
         return 'driving';
       case TransportMode.driving:
       default:

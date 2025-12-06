@@ -108,11 +108,11 @@ class ProfileScreen extends StatelessWidget {
               /// -- BUTTON
               TPrimaryButton(
                 isFullWidth: false,
-                width: 200,
+                width: 150,
                 text: TTexts.tEditProfile,
                 onPressed: () => Get.to(() => UpdateProfileScreen()),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               const Divider(),
               const SizedBox(height: 10),
 
