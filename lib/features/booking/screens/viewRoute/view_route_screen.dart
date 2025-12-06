@@ -33,7 +33,9 @@ class ViewRoute extends StatelessWidget {
     CustomMapController controller = Get.put(CustomMapController());
 
     // Define primary color for buttons
-    final primaryColor = Theme.of(context).primaryColor;
+    final primaryColor = Theme
+        .of(context)
+        .primaryColor;
 
     return Scaffold(
       appBar: AppBar(
@@ -54,7 +56,8 @@ class ViewRoute extends StatelessWidget {
               children: [
                 // Zoom In Button
                 FloatingActionButton.small(
-                  heroTag: 'zoom_in_route', // Unique hero tag required
+                  heroTag: 'zoom_in_route',
+                  // Unique hero tag required
                   backgroundColor: Colors.white,
                   foregroundColor: primaryColor,
                   onPressed: () => controller.zoomIn(),
@@ -63,7 +66,8 @@ class ViewRoute extends StatelessWidget {
                 const SizedBox(height: 8),
                 // Zoom Out Button
                 FloatingActionButton.small(
-                  heroTag: 'zoom_out_route', // Unique hero tag required
+                  heroTag: 'zoom_out_route',
+                  // Unique hero tag required
                   backgroundColor: Colors.white,
                   foregroundColor: primaryColor,
                   onPressed: () => controller.zoomOut(),
@@ -92,10 +96,8 @@ class ViewRoute extends StatelessWidget {
   }
 
   // ... (rest of the _showRideChoiceModal and _showSeatSelectionModal methods remain unchanged)
-  void _showRideChoiceModal(
-      BuildContext context,
-      CustomMapController controller,
-      ) {
+  void _showRideChoiceModal(BuildContext context,
+      CustomMapController controller,) {
     // RideRepository.instance.addDummyRides();
     Get.bottomSheet(
       Container(
@@ -168,81 +170,137 @@ class ViewRoute extends StatelessWidget {
     );
   }
 
-  void _showSeatSelectionModal(
-      BuildContext context,
+  void _showSeatSelectionModal(BuildContext context,
       CustomMapController controller,
+      // Note: Assuming 'source', 'destination', 'sourcename', 'destinationname',
+      // 'UserRepository', 'AuthenticationRepository', 'RideRepository', and 'TRoutes'
+      // are available from the parent ViewRoute class scope.
       ) {
     int selectedSeats = 1;
 
     Get.bottomSheet(
       StatefulBuilder(
         builder: (context, setState) {
+          // Get the primary color dynamically for modern styling
+          final primaryColor = Theme.of(context).primaryColor;
+
           return Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
+            // The container background outside the modal (usually transparent or theme color)
+            color: Theme.of(context).scaffoldBackgroundColor,
+            padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 20),
+            decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15), // Slightly stronger shadow
+                  blurRadius: 15,
+                  offset: const Offset(0, -6),
+                ),
+              ],
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
             ),
-            child: Wrap(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // 1. Handle Bar (Drag Indicator)
                 Center(
                   child: Container(
-                    width: 40,
+                    width: 50,
                     height: 4,
-                    margin: const EdgeInsets.only(bottom: 16),
+                    margin: const EdgeInsets.only(bottom: 24),
                     decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),
 
+                // 2. Question Text
                 const Text(
                   "How many seats are available?",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 19, fontWeight: FontWeight.w700, color: Colors.black87),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30), // Increased spacing for the selection area
 
+                // 3. Seat Selection Row (Modern Look)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(4, (index) {
                     int seat = index + 1;
+                    bool isSelected = selectedSeats == seat;
+
                     return GestureDetector(
                       onTap: () {
                         setState(() => selectedSeats = seat);
                       },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
-                        padding: const EdgeInsets.all(16),
+                      child: AnimatedContainer( // Use AnimatedContainer for smooth transitions
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeOut,
+                        margin: const EdgeInsets.symmetric(horizontal: 6), // Reduced margin slightly
+                        width: 60, // Slightly wider buttons
+                        height: 70, // Taller buttons
                         decoration: BoxDecoration(
-                          color: selectedSeats == seat
-                              ? Colors.green
-                              : Colors.grey,
-                          borderRadius: BorderRadius.circular(12),
+                          color: isSelected
+                              ? primaryColor // Use the strong primary color when selected
+                              : Colors.grey.shade50, // Very light background when unselected
+                          borderRadius: BorderRadius.circular(15), // Slightly larger radius
+                          border: isSelected ? null : Border.all(color: Colors.grey.shade200, width: 1),
+                          boxShadow: isSelected
+                              ? [
+                            BoxShadow(
+                              color: primaryColor.withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ]
+                              : [], // No shadow when unselected
                         ),
-                        child: Text(
-                          seat.toString(),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Icon to represent a seat
+                            Icon(
+                              Icons.event_seat_rounded,
+                              size: 20,
+                              color: isSelected ? Colors.white : Colors.black54,
+                            ),
+                            const SizedBox(height: 4),
+                            // Seat Number
+                            Text(
+                              seat.toString(),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: isSelected ? Colors.white : Colors.black87,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
                   }),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 40), // More space before the main button
 
+                // 4. Publish Button (Main Action)
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: primaryColor, // Use Primary color for the main action
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 56),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 5,
                   ),
                   onPressed: () async {
                     Navigator.pop(context); // close modal
 
+                    // --- Business Logic (Unchanged) ---
                     final user = await UserRepository.instance.getUserById(
                       AuthenticationRepository.instance.getUserID,
                     );
@@ -266,7 +324,6 @@ class ViewRoute extends StatelessWidget {
                       destination: destination,
                     );
 
-                    // ✅ NOW show snackbar + navigate
                     Get.snackbar(
                       "Ride Published",
                       "Your ride has been successfully created!",
@@ -281,7 +338,7 @@ class ViewRoute extends StatelessWidget {
                   },
                   child: const Text(
                     "Publish Ride",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -289,6 +346,5 @@ class ViewRoute extends StatelessWidget {
           );
         },
       ),
-    );
-  }
+    );  }
 }
