@@ -45,6 +45,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   line_awesome_flutter: ^3.0.1
 
+
+
   #Google and Maps
   geopoint: ^1.0.0
   geolocator: ^14.0.2
@@ -62,6 +64,7 @@ dependencies:
   readmore: ^3.0.0
   image_picker: ^1.1.2
   url_launcher: ^6.3.1
+  image_cropper: ^11.0.0
   carousel_slider: ^5.0.0
   connectivity_plus: ^7.0.0
   country_code_picker: ^3.3.0

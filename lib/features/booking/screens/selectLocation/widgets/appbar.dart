@@ -14,11 +14,13 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final networkImage = UserController.instance.user.value.profilePicture;
+    final userController = UserController.instance;
+    final networkImage = userController.user.value.profilePicture;
     final image = networkImage.isNotEmpty
         ? networkImage
         : TImages.tProfileImage;
     final dark = THelperFunctions.isDarkMode(context);
+
     return AppBar(
       elevation: 0,
       centerTitle: true,
@@ -28,21 +30,25 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
         style: Theme.of(context).textTheme.headlineMedium,
       ),
       actions: [
-        Container(
-          margin: const EdgeInsets.only(right: 20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: dark ? TColors.secondary : TColors.cardBackgroundColor,
-          ),
-          child: IconButton(
-            onPressed: () => Get.toNamed(TRoutes.profileScreen),
-            icon: TRoundedImage(
+        Padding(
+          padding: const EdgeInsets.only(right: 20),
+          child: GestureDetector(
+            onTap: () => Get.toNamed(TRoutes.profileScreen),
+            child: Container(
               width: 60,
               height: 60,
-              isNetworkImage: networkImage.isNotEmpty,
-              fit: BoxFit.fill,
-              imageUrl: image,
-              borderRadius: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: dark ? TColors.secondary : TColors.cardBackgroundColor,
+              ),
+              child: TRoundedImage(
+                width: 60,
+                height: 60,
+                isNetworkImage: networkImage.isNotEmpty,
+                fit: BoxFit.cover,
+                imageUrl: image,
+                borderRadius: 50,
+              ),
             ),
           ),
         ),

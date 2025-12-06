@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.liftapp2"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = "28.0.12674087"
 
     compileOptions {

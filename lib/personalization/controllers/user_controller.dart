@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:image_cropper/image_cropper.dart';
 import '../../common/widgets/loaders/circular_loader.dart';
 import '../../data/repository/notifications/authrepository.dart';
 import '../../data/repository/user_repository/user_repository.dart';
@@ -180,6 +180,7 @@ class UserController extends GetxController {
 
   Future<void> uploadUserProfilePicture() async {
     try {
+      // Pick Image
       final picked = await ImagePicker().pickImage(
         source: ImageSource.gallery,
         imageQuality: 70,
@@ -189,27 +190,49 @@ class UserController extends GetxController {
 
       if (picked == null) return;
 
-      imageUploading.value = true;
-
-      /// CLOUDINARY CONFIG
-      final cloudinary = CloudinaryPublic(
-        'liftshare',
-        'pfp-app', // ← replace
-        cache: true,
+      // Crop Image in Circle
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: picked.path,
+        aspectRatio: const CropAspectRatio(
+          ratioX: 1,
+          ratioY: 1,
+        ), // Square for circle
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Profile Image',
+            toolbarColor: Colors.blue,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true,
+            cropStyle: CropStyle.circle, // Circular crop here
+          ),
+          IOSUiSettings(
+            title: 'Crop Profile Image',
+            aspectRatioLockEnabled: true,
+            rectX: 1, // ensure square
+            rectY: 1,
+            resetButtonHidden: true,
+          ),
+        ],
       );
 
-      /// UPLOAD TO CLOUDINARY
-      CloudinaryResponse response = await cloudinary.uploadFile(
-        CloudinaryFile.fromFile(picked.path, folder: "Users/Profile"),
+      if (croppedFile == null) return;
+
+      imageUploading.value = true;
+
+      // Upload to Cloudinary
+      final cloudinary = CloudinaryPublic('liftshare', 'pfp-app', cache: true);
+
+      final response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(croppedFile.path, folder: "Users/Profile"),
       );
 
       final uploadedUrl = response.secureUrl;
 
-      /// SAVE URL IN FIRESTORE
-      Map<String, dynamic> newImage = {'profilePicture': uploadedUrl};
-      await userRepository.updateSingleField(newImage);
+      // Save URL in Firestore
+      await userRepository.updateSingleField({'profilePicture': uploadedUrl});
 
-      /// UPDATE LOCAL USER MODEL
+      // Update local user model
       user.value.profilePicture = uploadedUrl;
       user.refresh();
       profileImageUrl.value = uploadedUrl;
