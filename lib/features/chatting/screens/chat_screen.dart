@@ -91,7 +91,8 @@ class ChatScreen extends StatelessWidget {
         backgroundColor: kDarkAppBar, // Darker App Bar
         foregroundColor: Colors.white,
       ),
-      body: Column(
+        body: SafeArea(
+      child: Column(
         children: [
           // Message List
           Expanded(
@@ -112,6 +113,7 @@ class ChatScreen extends StatelessWidget {
           _buildChatInput(controller, textController, currentUserId),
         ],
       ),
+        ),
     );
   }
 

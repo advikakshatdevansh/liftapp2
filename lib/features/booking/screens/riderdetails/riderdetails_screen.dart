@@ -31,22 +31,24 @@ class RiderDetailsScreen extends StatelessWidget {
 
       return Scaffold(
         appBar: AppBar(title: const Text("Rider Details")),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
+          body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
           child: Column(
             children: [
               /// PROFILE CARD
               Card(
-                elevation: 4,
+                elevation: 0,
+                color: Colors.black, // Example: Set to a very light gray
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
                       CircleAvatar(
-                        radius: 40,
+                        radius: 60,
                         backgroundImage: user.profilePicture.isNotEmpty
                             ? NetworkImage(user.profilePicture)
                             : null,
@@ -80,9 +82,6 @@ class RiderDetailsScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
-              const SizedBox(height: 20),
-
               /// CONTACT BUTTONS
               Row(
                 children: [
@@ -93,6 +92,14 @@ class RiderDetailsScreen extends StatelessWidget {
                       label: const Text("Call"),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
+                        // --- FIX 1: Set text/icon color to white ---
+                        foregroundColor: Colors.white,
+                        // --- FIX 2: Remove border/shadow ---
+                        elevation: 0,
+                        side: BorderSide.none,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40), // Adjust the value (e.g., 8, 12, 40) as needed
+                        ),
                       ),
                     ),
                   ),
@@ -104,20 +111,34 @@ class RiderDetailsScreen extends StatelessWidget {
                       label: const Text("Message"),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
+                        // --- FIX 1: Set text/icon color to white ---
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        side: BorderSide.none,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40), // Adjust the value (e.g., 8, 12, 40) as needed
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-
               const SizedBox(height: 20),
 
               /// TRIP SUMMARY
               Card(
                 elevation: 2,
+                color: Colors.black, // Example: Set to a very light gray
+
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
+                  side: BorderSide(
+                    color: Colors.grey.shade800, // A light border color
+                    width: 1.0,                    // A thin border width
+                  ),
                 ),
+
+
                 child: Column(
                   children: [
                     ListTile(
@@ -164,7 +185,7 @@ class RiderDetailsScreen extends StatelessWidget {
                 ),
               ),
 
-              const Spacer(),
+              const SizedBox(height: 10),
 
               /// REQUEST LIFT
               SizedBox(
@@ -174,16 +195,23 @@ class RiderDetailsScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple,
                     padding: const EdgeInsets.symmetric(vertical: 18),
+                    foregroundColor: Colors.white,
+                    elevation: 0.0,
+                    side: BorderSide.none,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12), // Adjust the value (e.g., 8, 12, 40) as needed
+                    ),
                   ),
                   child: const Text(
                     "Request Lift",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ),
+          )
       );
     });
   }

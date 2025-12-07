@@ -80,7 +80,7 @@ class TDrawer extends StatelessWidget {
       ),
       _buildDrawerItem(
         icon: Iconsax.like_dislike,
-        title: "ActiveLifts",
+        title: "History Lifts",
         onTap: () => Get.toNamed(TRoutes.activeLifts),
       ),
       _buildDrawerItem(
