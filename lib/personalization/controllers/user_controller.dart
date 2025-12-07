@@ -12,15 +12,11 @@ import '../../data/services/notifications/notification_service.dart';
 // import '../../features/authentication/screens/welcome/welcome_screen.dart';
 import '../../routes/app_routes.dart';
 import '../../utils/constants/text_strings.dart';
-import '../../utils/popups/full_screen_loader.dart';
-import '../../utils/popups/loaders.dart';
 import '../models/user_model.dart';
 import '../../utils/constants/enums.dart';
 import '../../utils/constants/image_strings.dart';
 import '../../utils/constants/sizes.dart';
 import '../../utils/helpers/network_manager.dart';
-import 'package:cloudinary_public/cloudinary_public.dart';
-// import '../screens/profile/re_authenticate_user_login_form.dart';
 
 class UserController extends GetxController {
   static UserController get instance => Get.find();

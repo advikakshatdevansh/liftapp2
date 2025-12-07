@@ -43,8 +43,9 @@ class NotificationController extends GetxController {
         }
       }
 
-      if (selectedNotification.value.id.isNotEmpty)
+      if (selectedNotification.value.id.isNotEmpty) {
         await markNotificationAsViewed(selectedNotification.value);
+      }
     } catch (e) {
       if (kDebugMode) printError(info: e.toString());
       TLoaders.errorSnackBar(

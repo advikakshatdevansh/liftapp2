@@ -54,7 +54,7 @@ class AuthenticationRepository extends GetxController {
   }
 
   /// Function to Show Relevant Screen
-  screenRedirect(User? user) async {
+  Future<void> screenRedirect(User? user) async {
     if (user != null) {
       // Fetch User Record
       await UserController.instance.fetchUserRecord();

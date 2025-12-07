@@ -1,12 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
 import 'package:geoflutterfire_plus/geoflutterfire_plus.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../utils/exceptions/firebase_exceptions.dart';
-import '../../../utils/exceptions/format_exceptions.dart';
-import '../../../utils/exceptions/platform_exceptions.dart';
 import '../../models/lift_model.dart';
 
 class LiftRepository extends GetxController {

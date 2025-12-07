@@ -7,7 +7,6 @@ import 'package:liftapp2/personalization/screens/active_lifts/active_lifts_scree
 import 'package:liftapp2/personalization/screens/notification/notification_screen.dart';
 import 'package:liftapp2/personalization/screens/profile/re_authenticate_phone_otp_screen.dart';
 import '../bindings/notification_binding.dart';
-import '../features/UI/Dashboard.dart';
 import '../features/UI/Rider.dart';
 import '../features/authentication/screens/forget_password/forget_password_otp/otp_screen.dart';
 import '../features/authentication/screens/login/login_screen.dart';

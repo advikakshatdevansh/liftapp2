@@ -7,7 +7,9 @@ import 'chat_screen.dart';
 import 'package:intl/intl.dart'; // VITAL: For clean time formatting
 
 // Define a consistent highlight color (Telegram Blue or WhatsApp Green)
-const Color kAccentColor = Color(0xFF075E54); // WhatsApp Green or similar primary color
+const Color kAccentColor = Color(
+  0xFF075E54,
+); // WhatsApp Green or similar primary color
 
 class AllChatsScreen extends StatelessWidget {
   const AllChatsScreen({super.key});
@@ -18,7 +20,10 @@ class AllChatsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("All Chats", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          "All Chats",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         // Optional: Add a search icon
         actions: [
           IconButton(icon: const Icon(Icons.search), onPressed: () {}),
@@ -28,13 +33,20 @@ class AllChatsScreen extends StatelessWidget {
       body: Obx(() {
         if (controller.chats.isEmpty) {
           return const Center(
-            child: Text("No chats yet. Start a new conversation!", style: TextStyle(color: Colors.grey)),
+            child: Text(
+              "No chats yet. Start a new conversation!",
+              style: TextStyle(color: Colors.grey),
+            ),
           );
         }
 
         return ListView.separated(
           itemCount: controller.chats.length,
-          separatorBuilder: (context, index) => const Divider(height: 1, indent: 72, endIndent: 16), // Divider below the avatar
+          separatorBuilder: (context, index) => const Divider(
+            height: 1,
+            indent: 72,
+            endIndent: 16,
+          ), // Divider below the avatar
           itemBuilder: (context, index) {
             final chat = controller.chats[index];
             final otherUserId = controller.getOtherUserId(chat);
@@ -42,7 +54,8 @@ class AllChatsScreen extends StatelessWidget {
             final photo = controller.getOtherUserPhoto(otherUserId);
 
             // Assume we can check if a chat has unread messages (Dummy check here)
-            final unreadCount = index % 3; // Example: every 3rd chat has unread messages
+            final unreadCount =
+                index % 3; // Example: every 3rd chat has unread messages
             final hasUnread = unreadCount > 0;
 
             final lastMessageText = chat.lastMessage.isNotEmpty
@@ -51,24 +64,37 @@ class AllChatsScreen extends StatelessWidget {
 
             // Format time using intl package
             final timeString = chat.lastMessageTime != null
-                ? DateFormat.jm().format(chat.lastMessageTime!) // Example: 4:05 PM
+                ? DateFormat.jm().format(
+                    chat.lastMessageTime!,
+                  ) // Example: 4:05 PM
                 : "";
 
             return ListTile(
-              contentPadding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 16.0),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 2.0,
+                horizontal: 16.0,
+              ),
 
               // 1. Avatar (Leading)
-              leading: TCircularImage(
-                image: TImages.tProfileImage,
-                width: 54, // Slightly larger avatar
+              leading: SizedBox(
+                width: 54, // Match original TCircularImage size
                 height: 54,
-                padding: 0,
+                child: CircleAvatar(
+                  backgroundImage: (photo != null && photo.isNotEmpty)
+                      ? NetworkImage(photo)
+                      : const AssetImage(TImages.tProfileImage)
+                            as ImageProvider,
+                  backgroundColor: Colors.grey.shade200,
+                ),
               ),
 
               // 2. Chat Details (Title & Subtitle)
               title: Text(
                 name,
-                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               subtitle: Text(
                 lastMessageText,
@@ -90,8 +116,12 @@ class AllChatsScreen extends StatelessWidget {
                     timeString,
                     style: TextStyle(
                       fontSize: 12,
-                      color: hasUnread ? kAccentColor : Colors.grey[600], // Highlight time if unread
-                      fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
+                      color: hasUnread
+                          ? kAccentColor
+                          : Colors.grey[600], // Highlight time if unread
+                      fontWeight: hasUnread
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -116,7 +146,7 @@ class AllChatsScreen extends StatelessWidget {
 
               onTap: () {
                 Get.to(
-                      () => ChatScreen(
+                  () => ChatScreen(
                     chatId: chat.id,
                     currentUserId: controller.currentUserId,
                     otherUserId: otherUserId,

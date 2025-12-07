@@ -30,7 +30,7 @@ class TNotificationService extends GetxService {
     initializeNotifications();
   }
 
-  initializeNotifications() async {
+  Future<void> initializeNotifications() async {
     await requestPermission();
     _initializeLocalNotifications();
     _setupFirebaseListeners();

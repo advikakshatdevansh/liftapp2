@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
@@ -5,9 +7,11 @@ import 'package:intl/intl.dart';
 import '../../../../data/models/ride_model.dart';
 import '../../../../data/repository/user_repository/user_repository.dart';
 import '../../../../data/repository/notifications/authrepository.dart';
+import '../../../data/models/message_model.dart';
 import '../../../personalization/models/user_model.dart';
 import '../../chatting/controllers/chat_controller.dart';
 import '../../chatting/controllers/chat_list_controller.dart';
+import '../../chatting/screens/chat_screen.dart';
 
 class RiderDetailsController extends GetxController {
   final RideModel ride;
@@ -51,15 +55,14 @@ class RiderDetailsController extends GetxController {
       currentUserId,
       ride.userId,
     );
-
-    Get.toNamed(
-      "/chat",
-      arguments: {
-        "chatId": chatId,
-        "currentUserId": currentUserId,
-        "otherUserId": ride.userId,
-        "otherUserName": ride.riderName,
-      },
+    print(chatId);
+    Get.to(
+      () => ChatScreen(
+        chatId: chatId,
+        currentUserId: currentUserId,
+        otherUserId: ride.userId,
+        otherUserName: ride.riderName,
+      ),
     );
   }
 
@@ -70,36 +73,61 @@ class RiderDetailsController extends GetxController {
   void requestLift() async {
     final currentUserId = AuthenticationRepository.instance.getUserID;
 
-    /// 1. Get or create chat
     final chatId = await chatListController.createOrGetChat(
       currentUserId,
       ride.userId,
     );
 
-    /// 2. Build automatic message
-    final autoMessage =
-        '''
-🚗 Lift Request Received!
-
-A passenger has requested a lift for the following trip:
-
-📍 From: ${ride.sourceName}
-📌 To: ${ride.destinationName}
-📏 Distance: ${ride.distanceKm.toStringAsFixed(2)} km
-💰 Estimated Price: ₹${(ride.distanceKm * 6).toStringAsFixed(2)}
-⏱ Departure Time: ${formattedRideTime}
-
-Please confirm when you're available.
-''';
-
-    /// 3. Send message using ChatController
     final chatController = ChatController(chatId);
-    await chatController.sendMessage(autoMessage, currentUserId);
 
-    /// 4. Notify user
+    await chatController.sendRideRequest(
+      rideId: ride.userId,
+      seatsRequested: 1,
+      message: "Requested 1 seat from you 🔔",
+    );
+    print(chatId);
     Get.snackbar(
       "Request Sent",
-      "A message has been sent to ${user.value?.fullName}",
+      "Your lift request has been sent to ${user.value?.fullName}",
     );
+    //     final currentUserId = AuthenticationRepository.instance.getUserID;
+    //
+    //     /// 1. Get or create chat
+    //     final chatId = await chatListController.createOrGetChat(
+    //       currentUserId,
+    //       ride.userId,
+    //     );
+    //
+    //     /// 2. Build automatic message
+    //     final autoMessage =
+    //         '''
+    // 🚗 Lift Request Received!
+    //
+    // A passenger has requested a lift for the following trip:
+    //
+    // 📍 From: ${ride.sourceName}
+    // 📌 To: ${ride.destinationName}
+    // 📏 Distance: ${ride.distanceKm.toStringAsFixed(2)} km
+    // 💰 Estimated Price: ₹${(ride.distanceKm * 6).toStringAsFixed(2)}
+    // ⏱ Departure Time: $formattedRideTime
+    //
+    // Please confirm when you're available.
+    // ''';
+    //
+    //     /// 3. Send message using ChatController
+    //     final chatController = ChatController(chatId);
+    //     await chatController.sendMessage(autoMessage, currentUserId);
+    //
+    //     /// 4. Notify user
+    //     Get.snackbar(
+    //       "Request Sent",
+    //       "A message has been sent to ${user.value?.fullName}",
+    //     );
   }
+
+  Future<void> sendRideRequest({
+    required String rideId,
+    required int seatsRequested,
+    required String message,
+  }) async {}
 }

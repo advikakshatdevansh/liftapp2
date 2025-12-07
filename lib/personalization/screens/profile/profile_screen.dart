@@ -153,7 +153,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  _showLogoutModal() {
+  void _showLogoutModal() {
     Get.defaultDialog(
       title: "LOGOUT",
       titleStyle: const TextStyle(fontSize: 20),

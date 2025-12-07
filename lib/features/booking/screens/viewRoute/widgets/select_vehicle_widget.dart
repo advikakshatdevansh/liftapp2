@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../../routes/app_routes.dart';
 import '../../../controllers/google_map_controller.dart';
 import '../../nearbylifts/nearby_rides_screen.dart';
 

@@ -3,13 +3,17 @@ import 'package:get/get.dart';
 // Assuming you have these models/controllers
 import '../controllers/chat_controller.dart';
 import '../../../data/models/message_model.dart'; // Assuming you have a MessageModel
-import 'package:intl/intl.dart'; // Add this for proper time formatting
+// Add this for proper time formatting
 
 // --- Theme Colors ---
 const Color kDarkBackground = Colors.transparent; // Primary dark background
-const Color kDarkAppBar = Color(0xFF212C36);     // Slightly lighter dark for App Bar/Cards
-const Color kSenderBubble = Color(0xFF51B06C);    // Telegram sender green/blue
-const Color kReceiverBubble = Color(0xFF334252);  // Telegram receiver deep blue-grey
+const Color kDarkAppBar = Color(
+  0xFF212C36,
+); // Slightly lighter dark for App Bar/Cards
+const Color kSenderBubble = Color(0xFF51B06C); // Telegram sender green/blue
+const Color kReceiverBubble = Color(
+  0xFF334252,
+); // Telegram receiver deep blue-grey
 const Color kInputBackground = Color(0xFF23303D); // Input field background
 
 // Custom Painter for the chat bubble "tail"
@@ -22,12 +26,19 @@ class ChatBubblePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final RRect rRect = RRect.fromLTRBAndCorners(
-      0, 0, size.width, size.height,
+      0,
+      0,
+      size.width,
+      size.height,
       topLeft: const Radius.circular(20),
       topRight: const Radius.circular(20),
       // Adjusted corner radii for the Telegram style
-      bottomLeft: isSender ? const Radius.circular(20) : const Radius.circular(4),
-      bottomRight: isSender ? const Radius.circular(4) : const Radius.circular(12),
+      bottomLeft: isSender
+          ? const Radius.circular(20)
+          : const Radius.circular(4),
+      bottomRight: isSender
+          ? const Radius.circular(4)
+          : const Radius.circular(12),
     );
 
     final Paint paint = Paint()..color = color;
@@ -76,20 +87,16 @@ class ChatScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kDarkBackground, // Primary Dark Background
       appBar: AppBar(
-        title: Text(
-          otherUserName,
-          style: const TextStyle(color: Colors.white),
-        ),
+        title: Text(otherUserName, style: const TextStyle(color: Colors.white)),
         backgroundColor: kDarkAppBar, // Darker App Bar
         foregroundColor: Colors.white,
-
       ),
       body: Column(
         children: [
           // Message List
           Expanded(
             child: Obx(
-                  () => ListView.builder(
+              () => ListView.builder(
                 reverse: true, // Show most recent at the bottom
                 itemCount: controller.messages.length,
                 padding: const EdgeInsets.only(top: 8),
@@ -110,15 +117,62 @@ class ChatScreen extends StatelessWidget {
 
   // Helper widget for Message Bubble
   Widget _buildMessageBubble(
-      MessageModel msg, bool isMine, ChatController controller) {
+    MessageModel msg,
+    bool isMine,
+    ChatController controller,
+  ) {
     final Color bubbleColor = isMine ? kSenderBubble : kReceiverBubble;
-    final Alignment alignment =
-    isMine ? Alignment.centerRight : Alignment.centerLeft;
-
+    final Alignment alignment = isMine
+        ? Alignment.centerRight
+        : Alignment.centerLeft;
     // Use the controller to format the timestamp
-    final String time =
-    controller.formatTime(msg.timestamp); // Assuming formatTime exists
+    final String time = controller.formatTime(
+      msg.timestamp,
+    ); // Assuming formatTime exists
+    if (msg.requestType == MessageType.requestRide) {
+      return Align(
+        alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          margin: EdgeInsets.all(10),
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.orange.shade700,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: isMine
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.start,
+            children: [
+              Text(
+                msg.text, // "User requested 1 seat for your ride"
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              const SizedBox(height: 10),
 
+              // Only the rider sees the buttons
+              if (!isMine)
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => controller.acceptRideRequest(msg),
+                      child: const Text("Accept"),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      onPressed: () => controller.rejectRideRequest(msg),
+                      child: const Text("Reject"),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        ),
+      );
+    }
     return Align(
       alignment: alignment,
       child: Container(
@@ -160,14 +214,19 @@ class ChatScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Text(
                           msg.text,
-                          style: const TextStyle(fontSize: 16, color: Colors.white),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
 
                     // 2. Time and Status Cluster: Pushed to the far right of the last line
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0), // Adjust alignment vertically
+                      padding: const EdgeInsets.only(
+                        bottom: 2.0,
+                      ), // Adjust alignment vertically
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -197,15 +256,18 @@ class ChatScreen extends StatelessWidget {
             ),
 
             // CustomPaint for the message tail/pointer
-
           ],
         ),
       ),
-    );  }
+    );
+  }
 
   // Helper widget for Chat Input
   Widget _buildChatInput(
-      ChatController controller, TextEditingController textController, String currentUserId) {
+    ChatController controller,
+    TextEditingController textController,
+    String currentUserId,
+  ) {
     return Container(
       padding: const EdgeInsets.only(left: 12, right: 12, bottom: 25, top: 8),
       color: Colors.transparent,
@@ -220,14 +282,17 @@ class ChatScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 // FIX: Add a border using Border.all
                 border: Border.all(
-                  color: Colors.grey, // Choose a color for the border (e.g., subtle grey or white54 for dark theme)
-                  width: 1.0,         // Set the thickness of the border
+                  color: Colors
+                      .grey, // Choose a color for the border (e.g., subtle grey or white54 for dark theme)
+                  width: 1.0, // Set the thickness of the border
                 ),
               ),
 
               child: Padding(
                 // This handles the space between the rounded container edge and the text
-                padding: const EdgeInsets.symmetric(horizontal: 8.0), // Keep clean horizontal margin
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                ), // Keep clean horizontal margin
                 child: Row(
                   children: [
                     Expanded(
@@ -243,8 +308,10 @@ class ChatScreen extends StatelessWidget {
 
                           // VITAL FIXES: Remove all border states
                           border: InputBorder.none,
-                          focusedBorder: InputBorder.none, // Removes the border when the field is focused
-                          enabledBorder: InputBorder.none, // Ensures consistency when the field is active but not focused
+                          focusedBorder: InputBorder
+                              .none, // Removes the border when the field is focused
+                          enabledBorder: InputBorder
+                              .none, // Ensures consistency when the field is active but not focused
 
                           isDense: true,
                           contentPadding: EdgeInsets.fromLTRB(8, 10.0, 8, 10.0),

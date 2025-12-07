@@ -4,6 +4,7 @@ import 'dart:async'; // Import for StreamSubscription
 import 'package:intl/intl.dart'; // REQUIRED: Add 'intl: ^[latest_version]' to pubspec.yaml
 
 import '../../../data/models/message_model.dart';
+import '../../../data/repository/notifications/authrepository.dart';
 
 class ChatController extends GetxController {
   final String chatId;
@@ -23,11 +24,11 @@ class ChatController extends GetxController {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .listen((snapshot) {
-      messages.value = snapshot.docs
-      // Assuming MessageModel.fromMap takes data and id
-          .map((doc) => MessageModel.fromMap(doc.data(), doc.id))
-          .toList();
-    });
+          messages.value = snapshot.docs
+              // Assuming MessageModel.fromMap takes data and id
+              .map((doc) => MessageModel.fromMap(doc.data(), doc.id))
+              .toList();
+        });
   }
 
   // 2. VITAL FIX: Add the formatTime method
@@ -77,5 +78,109 @@ class ChatController extends GetxController {
 
     // Commit the batch
     await batch.commit();
+  }
+
+  Future<void> sendRideRequest({
+    required String rideId,
+    required int seatsRequested,
+    required String message,
+  }) async {
+    final msg = MessageModel(
+      senderId: AuthenticationRepository.instance.getUserID,
+      text: message,
+      timestamp: DateTime.now(),
+      requestType: MessageType.requestRide,
+      id: rideId,
+      requestStatus: 'none',
+    );
+    final currentUserId = AuthenticationRepository.instance.getUserID;
+    await FirebaseFirestore.instance
+        .collection("Chats")
+        .doc(chatId)
+        .collection("messages")
+        .add(msg.toMap());
+  }
+
+  Future<void> acceptRideRequest(MessageModel msg) async {
+    await _sendSystemReply(
+      text: "Your lift request has been accepted 🎉",
+      systemType: MessageType.requestAccepted,
+    );
+
+    await FirebaseFirestore.instance.collection("Rides").doc(msg.id).update({
+      "seatsAvailable": FieldValue.increment(-1),
+    });
+
+    await deleteMessage(msg);
+  }
+
+  Future<void> rejectRideRequest(MessageModel msg) async {
+    await _sendSystemReply(
+      text: "Your lift request was rejected ❌",
+      systemType: MessageType.requestRejected,
+    );
+
+    await deleteMessage(msg);
+  }
+
+  Future<void> _sendSystemReply({
+    required String text,
+    required MessageType
+    systemType, // e.g. 'requestAccepted' or 'requestRejected'
+  }) async {
+    final msgRef = FirebaseFirestore.instance
+        .collection('Chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc();
+
+    await msgRef.set({
+      'senderId': 'system',
+      'text': text,
+      'timestamp': FieldValue.serverTimestamp(),
+      'messageType': systemType,
+    });
+
+    await FirebaseFirestore.instance.collection('Chats').doc(chatId).update({
+      'lastMessage': text,
+      'lastMessageTime': FieldValue.serverTimestamp(),
+      'lastMessageSenderId': 'system',
+    });
+  }
+
+  /// ---------------------------
+  /// Delete a message by its document id. If msg.id is empty, fallback to timestamp query.
+  /// ---------------------------
+  Future<void> deleteMessage(MessageModel msg) async {
+    try {
+      if (msg.id.isNotEmpty) {
+        final ref = FirebaseFirestore.instance
+            .collection('Chats')
+            .doc(chatId)
+            .collection('messages')
+            .doc(msg.id);
+        await ref.delete();
+        return;
+      }
+
+      // Fallback: find by timestamp + senderId (less ideal)
+      final q = await FirebaseFirestore.instance
+          .collection('Chats')
+          .doc(chatId)
+          .collection('messages')
+          .where('senderId', isEqualTo: msg.senderId)
+          .where('text', isEqualTo: msg.text)
+          .orderBy('timestamp', descending: true)
+          .limit(5)
+          .get();
+
+      for (var doc in q.docs) {
+        // crude match; you can improve with timestamp equality if stored as ISO string
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      // handle error / log
+      print('deleteMessage error: $e');
+    }
   }
 }

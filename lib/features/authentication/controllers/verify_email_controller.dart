@@ -21,7 +21,7 @@ class VerifyEmailController extends GetxController {
   }
 
   /// Send Email Verification link
-  sendEmailVerification() async {
+  Future<void> sendEmailVerification() async {
     try {
       await AuthenticationRepository.instance.sendEmailVerification();
       TLoaders.successSnackBar(
@@ -55,7 +55,7 @@ class VerifyEmailController extends GetxController {
   // }
 
   /// Manually Check if Email Verified
-  checkEmailVerificationStatus() async {
+  Future<void> checkEmailVerificationStatus() async {
     await FirebaseAuth.instance.currentUser?.reload();
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null && currentUser.emailVerified) {

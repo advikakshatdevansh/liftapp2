@@ -1,14 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:liftapp2/routes/app_routes.dart';
-import '../../../../data/models/lift_model.dart';
-import '../../../../data/models/ride_model.dart';
 import '../../../../data/repository/lift_repository/lift_repository.dart';
 import '../../../../data/repository/ride_repository/ride_repository.dart';
 import '../../../../data/repository/notifications/authrepository.dart';
-import '../../../../data/repository/user_repository/user_repository.dart';
 import '../../controllers/google_map_controller.dart';
 import 'widgets/google_map_widget.dart';
 import 'widgets/select_vehicle_widget.dart';

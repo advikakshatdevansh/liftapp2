@@ -35,8 +35,9 @@ class NotificationRepository
 
   Stream<List<NotificationModel>> fetchAllItemsAsStream() {
     final String currentUserId = AuthenticationRepository.instance.getUserID;
-    if (currentUserId.isEmpty)
+    if (currentUserId.isEmpty) {
       return const Stream.empty(); // Return an empty stream if user ID is empty
+    }
 
     return db
         .collection("Notifications")

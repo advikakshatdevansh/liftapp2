@@ -7,7 +7,6 @@ import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/format_exceptions.dart';
 import '../../../utils/exceptions/platform_exceptions.dart';
 import '../../models/ride_model.dart';
-import '../notifications/authrepository.dart';
 import '../user_repository/user_repository.dart';
 
 class RideRepository extends GetxController {

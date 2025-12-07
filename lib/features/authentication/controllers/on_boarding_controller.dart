@@ -16,12 +16,12 @@ class OnBoardingController extends GetxController {
   RxInt currentPage = 0.obs;
 
   //Functions to trigger Skip, Next and onPageChange Events
-  skip() => controller.jumpToPage(page: 2);
+  dynamic skip() => controller.jumpToPage(page: 2);
 
-  animateToNextSlide() =>
+  dynamic animateToNextSlide() =>
       controller.animateToPage(page: controller.currentPage + 1);
 
-  animateToNextSlideWithLocalStorage() {
+  void animateToNextSlideWithLocalStorage() {
     if (controller.currentPage == 2) {
       userStorage.write('isFirstTime', false);
       Get.offAll(() => const WelcomeScreen());
@@ -30,7 +30,7 @@ class OnBoardingController extends GetxController {
     }
   }
 
-  onPageChangedCallback(int activePageIndex) =>
+  int onPageChangedCallback(int activePageIndex) =>
       currentPage.value = activePageIndex;
 
   //Three Onboarding Pages
