@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:async'; // Import for StreamSubscription
-import 'package:intl/intl.dart'; // REQUIRED: Add 'intl: ^[latest_version]' to pubspec.yaml
+import 'dart:async';
+import 'package:intl/intl.dart';
 
 import '../../../data/models/message_model.dart';
 import '../../../data/repository/notifications/authrepository.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatController extends GetxController {
   final String chatId;
@@ -24,11 +25,41 @@ class ChatController extends GetxController {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .listen((snapshot) {
-          messages.value = snapshot.docs
-              // Assuming MessageModel.fromMap takes data and id
+          final newMessages = snapshot.docs
               .map((doc) => MessageModel.fromMap(doc.data(), doc.id))
               .toList();
+
+          messages.value = newMessages;
+
+          if (newMessages.isNotEmpty) {
+            final msg = newMessages.first;
+
+            if (msg.requestType == MessageType.requestAccepted.name) {
+              _onRideAccepted();
+
+              // If UPI ID exists → redirect user to payment screen
+              if (msg.upiId != null && msg.upiId!.isNotEmpty) {
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  launchUPIPayment(
+                    upiId: msg.upiId!,
+                    payeeName: "Driver",
+                    amount: "50", // or dynamic based on ride
+                  );
+                });
+              }
+            }
+          }
         });
+  }
+
+  void _onRideAccepted() {
+    print("Rider accepted your request!");
+
+    Get.snackbar(
+      "Request Accepted",
+      "The rider has accepted your lift request 🎉",
+      snackPosition: SnackPosition.TOP,
+    );
   }
 
   // 2. VITAL FIX: Add the formatTime method
@@ -111,45 +142,59 @@ class ChatController extends GetxController {
     });
   }
 
-  // In ChatController
+  // 1. Update the arguments to accept 'upiId'
+  Future<void> acceptRideRequest(MessageModel msg, String upiId) async {
+    String rejectionReason = "";
 
-  Future<void> acceptRideRequest(MessageModel msg) async {
-    // 1. Send the system reply
-    await _sendSystemReply(
-      text: "Your lift request has been accepted 🎉",
-      systemType: MessageType.requestAccepted,
-      // Optional: you can pass the ride ID here if the system reply is tied to a ride
-    );
-
-    // 2. Decrement seats in the Ride document
-    // NOTE: msg.rideId is now used for the Ride document ID
-    if (msg.rideId.isNotEmpty) {
-      final rideRef = FirebaseFirestore.instance
-          .collection("Rides")
-          .doc(msg.rideId);
-
-      // 🚨 FIX: Check if the document exists before updating
-      try {
-        await rideRef.update({"seatsAvailable": FieldValue.increment(-1)});
-        print("Ride seats updated successfully for ride: ${msg.rideId}");
-      } on FirebaseException catch (e) {
-        // Catch the 'not-found' error and handle it gracefully
-        if (e.code == 'not-found') {
-          print(
-            "ERROR: Ride document ${msg.rideId} not found. It may have been deleted.",
-          );
-          // Optional: Send a follow-up system message to the rider if the ride is gone
-        } else {
-          rethrow;
-        }
-      }
-    } else {
-      print("ERROR: Message model has no rideId to update.");
+    if (msg.rideId.isEmpty) {
+      return;
     }
 
-    // 3. Delete the original request message
-    // NOTE: msg.id is now the Firestore document ID for the message
-    await deleteMessage(msg);
+    final rideRef = FirebaseFirestore.instance
+        .collection("Rides")
+        .doc(msg.rideId);
+
+    try {
+      final rideDoc = await rideRef.get();
+      if (!rideDoc.exists) {
+        throw StateError("The ride document was not found.");
+      }
+
+      // Transaction to safely decrement seats
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final snapshot = await transaction.get(rideRef);
+
+        if (!snapshot.exists) {
+          throw StateError("The ride document was not found.");
+        }
+        final currentSeats = snapshot.data()?['seatsAvailable'] as int? ?? 0;
+        const seatsToDecrement = 1;
+
+        if (currentSeats >= seatsToDecrement) {
+          transaction.update(rideRef, {
+            "seatsAvailable": FieldValue.increment(-seatsToDecrement),
+          });
+          return true;
+        } else {
+          throw StateError("Not enough seats available.");
+        }
+      });
+
+      // --- SUCCESS LOGIC ---
+
+      // 2. Pass the 'upiId' argument to the system reply
+      await _sendSystemReply(
+        text: "Your lift request has been accepted 🎉",
+        systemType: MessageType.requestAccepted,
+        upiId: upiId, // <--- This now works because we added the argument above
+      );
+
+      // 3. Delete the original request message
+      await deleteMessage(msg);
+    } catch (e) {
+      print("Error accepting ride: $e");
+      Get.snackbar("Error", "Could not accept ride: $e");
+    }
   }
 
   Future<void> rejectRideRequest(MessageModel msg) async {
@@ -183,8 +228,8 @@ class ChatController extends GetxController {
 
   Future<void> _sendSystemReply({
     required String text,
-    required MessageType
-    systemType, // e.g. 'requestAccepted' or 'requestRejected'
+    required MessageType systemType,
+    String? upiId, // <--- Optional parameter
   }) async {
     final msgRef = FirebaseFirestore.instance
         .collection('Chats')
@@ -192,12 +237,20 @@ class ChatController extends GetxController {
         .collection('messages')
         .doc();
 
-    await msgRef.set({
+    // Prepare data
+    final Map<String, dynamic> data = {
       'senderId': 'system',
       'text': text,
       'timestamp': FieldValue.serverTimestamp(),
       'messageType': systemType.name,
-    });
+    };
+
+    // If UPI ID is provided, add it to the message data
+    if (upiId != null && upiId.isNotEmpty) {
+      data['upiId'] = upiId;
+    }
+
+    await msgRef.set(data);
 
     await FirebaseFirestore.instance.collection('Chats').doc(chatId).update({
       'lastMessage': text,
@@ -206,7 +259,23 @@ class ChatController extends GetxController {
     });
   }
 
-  /// ---------------------------
-  /// Delete a message by its document id. If msg.id is empty, fallback to timestamp query.
-  /// ---------------------------
+  Future<void> launchUPIPayment({
+    required String upiId,
+    required String payeeName,
+    required String amount,
+    String transactionNote = "Lift payment",
+  }) async {
+    final uri = Uri.parse(
+      "upi://pay"
+      "?pa=$upiId"
+      "&pn=$payeeName"
+      "&tn=$transactionNote"
+      "&am=$amount"
+      "&cu=INR",
+    );
+
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw "Could not launch UPI app";
+    }
+  }
 }

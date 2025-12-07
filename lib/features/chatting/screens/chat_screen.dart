@@ -155,7 +155,59 @@ class ChatScreen extends StatelessWidget {
                 Row(
                   children: [
                     ElevatedButton(
-                      onPressed: () => controller.acceptRideRequest(msg),
+                      onPressed: () {
+                        // 1. Create a controller for the input field
+                        final TextEditingController upiController =
+                            TextEditingController();
+
+                        // 2. Show the Dialog Box
+                        Get.defaultDialog(
+                          title: "Enter UPI ID",
+                          titleStyle: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          content: Column(
+                            children: [
+                              const Text(
+                                "Enter your UPI ID to receive payment from the passenger.",
+                              ),
+                              const SizedBox(height: 10),
+                              TextField(
+                                controller: upiController,
+                                decoration: const InputDecoration(
+                                  hintText: "e.g. 9876543210@ybl",
+                                  border: OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          textConfirm: "Confirm & Accept",
+                          textCancel: "Cancel",
+                          confirmTextColor: Colors.white,
+                          onConfirm: () {
+                            // 3. Validate and send
+                            if (upiController.text.trim().isNotEmpty) {
+                              Get.back(); // Close the dialog
+
+                              // Call the controller with BOTH the message and the entered UPI ID
+                              controller.acceptRideRequest(
+                                msg,
+                                upiController.text.trim(),
+                              );
+                            } else {
+                              Get.snackbar(
+                                "Required",
+                                "Please enter a UPI ID to continue.",
+                              );
+                            }
+                          },
+                        );
+                      },
                       child: const Text("Accept"),
                     ),
                     const SizedBox(width: 10),
