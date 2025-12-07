@@ -85,42 +85,83 @@ class ChatController extends GetxController {
     required int seatsRequested,
     required String message,
   }) async {
-    final msg = MessageModel(
-      senderId: AuthenticationRepository.instance.getUserID,
-      text: message,
-      timestamp: DateTime.now(),
-      requestType: MessageType.requestRide,
-      id: rideId,
-      requestStatus: 'none',
-    );
-    final currentUserId = AuthenticationRepository.instance.getUserID;
+    // Use a map directly for clarity when using .add()
+    final msgData = {
+      'senderId': AuthenticationRepository.instance.getUserID,
+      'text': message, // e.g., "User requested 1 seat for your ride"
+      'timestamp': FieldValue.serverTimestamp(),
+      'requestType': MessageType.requestRide.name,
+      'requestStatus': 'pending', // Use 'pending' for initial status
+      'rideId': rideId, // <-- NEW FIELD for the ride ID
+      'seatsRequested': seatsRequested,
+    };
+
+    // .add() automatically generates the document ID which is handled by the stream
     await FirebaseFirestore.instance
         .collection("Chats")
         .doc(chatId)
         .collection("messages")
-        .add(msg.toMap());
+        .add(msgData);
+
+    // Update last message in chat document
+    await FirebaseFirestore.instance.collection('Chats').doc(chatId).update({
+      'lastMessage': message,
+      'lastMessageTime': FieldValue.serverTimestamp(),
+      'lastMessageSenderId': AuthenticationRepository.instance.getUserID,
+    });
   }
 
+  // In ChatController
+
   Future<void> acceptRideRequest(MessageModel msg) async {
+    // 1. Send the system reply
     await _sendSystemReply(
       text: "Your lift request has been accepted 🎉",
       systemType: MessageType.requestAccepted,
+      // Optional: you can pass the ride ID here if the system reply is tied to a ride
     );
 
-    await FirebaseFirestore.instance.collection("Rides").doc(msg.id).update({
-      "seatsAvailable": FieldValue.increment(-1),
-    });
+    // 2. Decrement seats in the Ride document
+    // NOTE: msg.rideId is now used for the Ride document ID
+    if (msg.rideId.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection("Rides")
+          .doc(msg.rideId)
+          .update({"seatsAvailable": FieldValue.increment(-1)});
+    }
 
+    // 3. Delete the original request message
+    // NOTE: msg.id is now the Firestore document ID for the message
     await deleteMessage(msg);
   }
 
   Future<void> rejectRideRequest(MessageModel msg) async {
+    // 1. Send the system reply
     await _sendSystemReply(
       text: "Your lift request was rejected ❌",
       systemType: MessageType.requestRejected,
     );
 
+    // 2. Delete the original request message
+    // NOTE: msg.id is now the Firestore document ID for the message
     await deleteMessage(msg);
+  }
+
+  /// ---------------------------
+  /// Delete a message by its document id.
+  /// ---------------------------
+  Future<void> deleteMessage(MessageModel msg) async {
+    try {
+      // This is now guaranteed to be the document ID from the stream
+      final ref = FirebaseFirestore.instance
+          .collection('Chats')
+          .doc(chatId)
+          .collection('messages')
+          .doc(msg.id); // <-- This now uses the correct Firestore doc ID
+      await ref.delete();
+    } catch (e) {
+      print('deleteMessage error: $e');
+    }
   }
 
   Future<void> _sendSystemReply({
@@ -151,36 +192,4 @@ class ChatController extends GetxController {
   /// ---------------------------
   /// Delete a message by its document id. If msg.id is empty, fallback to timestamp query.
   /// ---------------------------
-  Future<void> deleteMessage(MessageModel msg) async {
-    try {
-      if (msg.id.isNotEmpty) {
-        final ref = FirebaseFirestore.instance
-            .collection('Chats')
-            .doc(chatId)
-            .collection('messages')
-            .doc(msg.id);
-        await ref.delete();
-        return;
-      }
-
-      // Fallback: find by timestamp + senderId (less ideal)
-      final q = await FirebaseFirestore.instance
-          .collection('Chats')
-          .doc(chatId)
-          .collection('messages')
-          .where('senderId', isEqualTo: msg.senderId)
-          .where('text', isEqualTo: msg.text)
-          .orderBy('timestamp', descending: true)
-          .limit(5)
-          .get();
-
-      for (var doc in q.docs) {
-        // crude match; you can improve with timestamp equality if stored as ISO string
-        await doc.reference.delete();
-      }
-    } catch (e) {
-      // handle error / log
-      print('deleteMessage error: $e');
-    }
-  }
 }

@@ -118,24 +118,14 @@ class ProfileScreen extends StatelessWidget {
 
               /// -- MENU
               ProfileMenuWidget(
-                title: "E-Commerce Dashboard",
+                title: "Home",
                 icon: Icons.home,
-                onPress: () => Get.toNamed(TRoutes.eComDashboard),
+                onPress: () => Get.toNamed(TRoutes.home),
               ),
               ProfileMenuWidget(
                 title: "Chats",
                 icon: Icons.message,
                 onPress: () => Get.toNamed(TRoutes.chatsScreen),
-              ),
-              ProfileMenuWidget(
-                title: "Checkout",
-                icon: Icons.shopping_bag,
-                onPress: () => Get.toNamed(TRoutes.checkoutScreen),
-              ),
-              ProfileMenuWidget(
-                title: "Wishlist",
-                icon: Icons.favorite,
-                onPress: () => Get.toNamed(TRoutes.favouritesScreen),
               ),
               const Divider(),
               const SizedBox(height: 10),
