@@ -33,8 +33,8 @@ class TDrawer extends StatelessWidget {
                 children: [
                   // Profile image
                   TRoundedImage(
-                    width: 60,
-                    height: 60,
+                    width: 80,
+                    height: 80,
                     isNetworkImage: networkImage.isNotEmpty,
                     fit: BoxFit.fill,
                     imageUrl: image,

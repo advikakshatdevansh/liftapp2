@@ -35,19 +35,19 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: GestureDetector(
             onTap: () => Get.toNamed(TRoutes.profileScreen),
             child: Container(
-              width: 60,
-              height: 60,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
                 color: dark ? TColors.secondary : TColors.cardBackgroundColor,
               ),
               child: TRoundedImage(
-                width: 60,
-                height: 60,
+                width: 30, // Reduced size for a smaller AppBar icon
+                height: 30,
                 isNetworkImage: networkImage.isNotEmpty,
                 fit: BoxFit.cover,
                 imageUrl: image,
-                borderRadius: 50,
+                borderRadius: 50, // Ensures a perfect circle
               ),
             ),
           ),
