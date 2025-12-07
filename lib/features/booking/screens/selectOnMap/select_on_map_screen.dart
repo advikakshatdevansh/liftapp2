@@ -81,7 +81,7 @@ class SelectOnMap extends StatelessWidget {
 
           // 3. Select Location Button (Bottom)
           Positioned(
-            bottom: 30, // Adjusted for cleaner bottom margin outside SafeArea
+            bottom: 55, // Adjusted for cleaner bottom margin outside SafeArea
             left: 20,
             right: 20,
             child: ElevatedButton(
