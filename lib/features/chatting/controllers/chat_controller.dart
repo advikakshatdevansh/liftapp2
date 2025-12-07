@@ -144,8 +144,6 @@ class ChatController extends GetxController {
 
   // 1. Update the arguments to accept 'upiId'
   Future<void> acceptRideRequest(MessageModel msg, String upiId) async {
-    String rejectionReason = "";
-
     if (msg.rideId.isEmpty) {
       return;
     }
@@ -155,38 +153,11 @@ class ChatController extends GetxController {
         .doc(msg.rideId);
 
     try {
-      final rideDoc = await rideRef.get();
-      if (!rideDoc.exists) {
-        throw StateError("The ride document was not found.");
-      }
-
-      // Transaction to safely decrement seats
-      await FirebaseFirestore.instance.runTransaction((transaction) async {
-        final snapshot = await transaction.get(rideRef);
-
-        if (!snapshot.exists) {
-          throw StateError("The ride document was not found.");
-        }
-        final currentSeats = snapshot.data()?['seatsAvailable'] as int? ?? 0;
-        const seatsToDecrement = 1;
-
-        if (currentSeats >= seatsToDecrement) {
-          transaction.update(rideRef, {
-            "seatsAvailable": FieldValue.increment(-seatsToDecrement),
-          });
-          return true;
-        } else {
-          throw StateError("Not enough seats available.");
-        }
-      });
-
       // --- SUCCESS LOGIC ---
-
-      // 2. Pass the 'upiId' argument to the system reply
       await _sendSystemReply(
         text: "Your lift request has been accepted 🎉",
         systemType: MessageType.requestAccepted,
-        upiId: upiId, // <--- This now works because we added the argument above
+        upiId: upiId,
       );
 
       // 3. Delete the original request message
