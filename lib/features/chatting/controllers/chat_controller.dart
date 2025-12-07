@@ -124,10 +124,27 @@ class ChatController extends GetxController {
     // 2. Decrement seats in the Ride document
     // NOTE: msg.rideId is now used for the Ride document ID
     if (msg.rideId.isNotEmpty) {
-      await FirebaseFirestore.instance
+      final rideRef = FirebaseFirestore.instance
           .collection("Rides")
-          .doc(msg.rideId)
-          .update({"seatsAvailable": FieldValue.increment(-1)});
+          .doc(msg.rideId);
+
+      // 🚨 FIX: Check if the document exists before updating
+      try {
+        await rideRef.update({"seatsAvailable": FieldValue.increment(-1)});
+        print("Ride seats updated successfully for ride: ${msg.rideId}");
+      } on FirebaseException catch (e) {
+        // Catch the 'not-found' error and handle it gracefully
+        if (e.code == 'not-found') {
+          print(
+            "ERROR: Ride document ${msg.rideId} not found. It may have been deleted.",
+          );
+          // Optional: Send a follow-up system message to the rider if the ride is gone
+        } else {
+          rethrow;
+        }
+      }
+    } else {
+      print("ERROR: Message model has no rideId to update.");
     }
 
     // 3. Delete the original request message
@@ -179,7 +196,7 @@ class ChatController extends GetxController {
       'senderId': 'system',
       'text': text,
       'timestamp': FieldValue.serverTimestamp(),
-      'messageType': systemType,
+      'messageType': systemType.name,
     });
 
     await FirebaseFirestore.instance.collection('Chats').doc(chatId).update({
