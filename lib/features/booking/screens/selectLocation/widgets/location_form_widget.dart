@@ -91,27 +91,64 @@ class LocationFormWidget extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            TextButton.icon(
-              onPressed: controller.openMap,
-              icon: const Icon(Icons.map),
-              label: const Text('Select On Map'),
-              style: TextButton.styleFrom(
-                // Set the color for the text and icon
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black, // Change 'Colors.blue' to your desired color
+            // 1. 'Select On Map' Button (Now full width)
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: controller.openMap,
+                icon: const Icon(Icons.location_on),
+                label: const Text(
+                  'Select On Map',
+                  style: TextStyle( // Added the specific TextStyle here
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: FilledButton.styleFrom(
+                  // Set background to white
+                  backgroundColor: Colors.white,
+                  // Set foreground (icon) to black
+                  foregroundColor: Colors.black,
+                  // Matches the vertical padding: 13
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  shape: RoundedRectangleBorder(
+                    // Matches the large border radius: 40
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  // Matches the light grey border
+                  side: const BorderSide(color: Colors.grey, width: 1.0),
+                ),
               ),
             ),
 
             const SizedBox(height: 14),
 
-            // Submit Button
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: FilledButton(
                 onPressed: controller.bookRide,
-                child: const Text('Book Ride'),
+                style: FilledButton.styleFrom(
+                  // Set background to white
+                  backgroundColor: Colors.white,
+                  // Set foreground (text) to black
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  // Optional: Add a light border to distinguish it from the white background
+                  side: const BorderSide(color: Colors.grey, width: 1.0),
+                ),
+                child: const Text(
+                  'Book Ride',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
+            )
+
           ],
         ),
       ),

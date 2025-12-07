@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liftapp2/features/booking/screens/selectLocation/widgets/quick_links_widget.dart';
 import '../../../../../common/widgets/drawer/drawer.dart';
 import 'widgets/location_form_widget.dart';
 import 'widgets/appbar.dart';
@@ -57,18 +58,7 @@ class SelectLocation extends StatelessWidget {
 
               // 2. Location Input Form (Original Widget)
               const LocationFormWidget(),
-
-              const SizedBox(height: 20),
-
-              // --- Attractive Content Below Form ---
-
-
-
-
-              // 5. Map Preview Placeholder
-
-
-              const SizedBox(height: 30), // Extra space at the bottom
+              const QuickSelectWidget(),
             ],
           ),
         ),
