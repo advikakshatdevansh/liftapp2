@@ -19,6 +19,7 @@ import 'widgets/profile_menu.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     // final dark = THelperFunctions.isDarkMode(context);
@@ -106,11 +107,24 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               /// -- BUTTON
-              TPrimaryButton(
-                isFullWidth: false,
+              SizedBox(
                 width: 150,
-                text: TTexts.tEditProfile,
-                onPressed: () => Get.to(() => UpdateProfileScreen()),
+                child: ElevatedButton(
+                  onPressed: () => Get.to(() => UpdateProfileScreen()),
+                  style: ElevatedButton.styleFrom(
+                    elevation: 2,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                  ),
+                  child: const Text(
+                    TTexts.tEditProfile,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               const Divider(),
@@ -127,15 +141,44 @@ class ProfileScreen extends StatelessWidget {
                 icon: Icons.message,
                 onPress: () => Get.toNamed(TRoutes.chatsScreen),
               ),
-              const Divider(),
-              const SizedBox(height: 10),
+
+              // --- Divider for Section Separation ---
+              const Divider(height: 30, thickness: 1),
+
+              // --- Settings & Privacy Section ---
               ProfileMenuWidget(
-                title: "Logout",
-                icon: LineAwesomeIcons.sign_out_alt_solid,
-                textColor: Colors.red,
-                endIcon: false,
-                onPress: () => _showLogoutModal(),
+                title: "Settings",
+                icon: Icons.settings,
+                onPress: () => Get.toNamed(TRoutes.settingsScreen), // New Route
               ),
+              ProfileMenuWidget(
+                title: "Privacy Policy",
+                icon: Icons.lock,
+                onPress: () => Get.toNamed(TRoutes.privacyPolicyScreen), // New Route
+              ),
+              ProfileMenuWidget(
+                title: "Manage Subscription",
+                icon: Icons.credit_card, // Or Icons.redeem
+                onPress: () => Get.toNamed(TRoutes.home), // New Route
+              ),
+
+              // --- Divider for Section Separation ---
+              const Divider(height: 30, thickness: 1),
+
+              // --- Support & Information Section ---
+              ProfileMenuWidget(
+                title: "Help & Support",
+                icon: Icons.help_outline,
+                onPress: () => Get.toNamed(TRoutes.helpandsupportScreen), // New Route
+              ),
+              ProfileMenuWidget(
+                title: "Rate Us",
+                icon: Icons.star_rate_rounded,
+                // You might use a package launcher for this
+                onPress: () => Get.toNamed(TRoutes.rateUsScreen), // New Route
+              ),
+              const Divider(height: 30, thickness: 1),
+              const SizedBox(height: 10),
             ],
           ),
         ),

@@ -12,8 +12,12 @@ import '../features/authentication/screens/forget_password/forget_password_otp/o
 import '../features/authentication/screens/login/login_screen.dart';
 import '../features/booking/screens/selectLocation/select_location_screen.dart';
 import '../features/chatting/screens/all_chat_screen.dart';
+import '../personalization/screens/helpandsupport/helpandsupport.dart';
 import '../personalization/screens/notification/notification_detail_screen.dart';
+import '../personalization/screens/privacypolicy/privacypolicy.dart';
 import '../personalization/screens/profile/profile_screen.dart';
+import '../personalization/screens/rateUs/rateUs.dart';
+import '../personalization/screens/settings/settings.dart';
 
 class TRoutes {
   static const login = '/login';
@@ -48,6 +52,12 @@ class TRoutes {
   static const favouritesScreen = '/favourites-screen';
   static const String riders = '/rider';
   static const allchats = '/allchats-screen';
+  static const privacyPolicyScreen = '/privacyPolicy-screen';
+  static const helpandsupportScreen = '/helpandsupport-screen';
+  static const rateUsScreen = '/rateUs-screen';
+  static const settingsScreen = '/settings-screen';
+
+
 
   static const activeLifts = '/active-lifts';
 
@@ -62,6 +72,11 @@ class TRoutes {
     GetPage(name: TRoutes.onboarding, page: () => const OnBoardingScreen()),
     GetPage(name: TRoutes.selectLocation, page: () => const SelectLocation()),
     GetPage(name: TRoutes.eComDashboard, page: () => const MyHomePage()),
+    GetPage(name: TRoutes.helpandsupportScreen, page: () => const HelpAndSupportScreen()),
+    GetPage(name: TRoutes.rateUsScreen, page: () => const RateUsScreen()),
+    GetPage(name: TRoutes.settingsScreen, page: () => const SettingsScreen()),
+    GetPage(name: TRoutes.privacyPolicyScreen, page: () => const PrivacyPolicyScreen()),
+
     GetPage(
       name: TRoutes.activeLifts,
       page: () {

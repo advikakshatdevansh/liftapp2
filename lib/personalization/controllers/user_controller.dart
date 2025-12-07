@@ -271,22 +271,57 @@ class UserController extends GetxController {
       contentPadding: const EdgeInsets.all(TSizes.md),
       title: 'Delete Account',
       middleText:
-          'Are you sure you want to delete your account permanently? This action is not reversible and all of your data will be removed permanently.',
-      confirm: ElevatedButton(
-        onPressed: () async => deleteUserAccount(),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red,
-          side: const BorderSide(color: Colors.red),
+      'Are you sure you want to delete your account permanently? This action is not reversible and all of your data will be removed permanently.',
+
+      // --- Custom Dialog Actions/Buttons ---
+      actions: [
+        // 1. Full-width Column for Buttons
+        Column(
+          children: [
+            // 2. Primary Action: Delete (Elevated Button with destructive color)
+            SizedBox(
+              width: double.infinity, // Makes button full width
+              child: ElevatedButton(
+                onPressed: () async => deleteUserAccount(),
+                style: ElevatedButton.styleFrom(
+                  // Use a standard red for clear danger
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white, // Ensure text is visible
+                  side: const BorderSide(color: Colors.red, width: 2), // Example: White border with 2px thickness
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)), // Slight rounding
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.sm), // Good vertical padding
+                ),
+                child: const Text('Delete Account Permanently', style: TextStyle(fontSize: 16)),
+              ),
+            ),
+
+            // 3. Spacing between buttons
+            const SizedBox(height: TSizes.sm),
+
+            // 4. Secondary Action: Cancel (Outlined Button)
+            SizedBox(
+              width: double.infinity, // Makes button full width
+              child: OutlinedButton(
+                onPressed: () => Get.back(), // Use Get.back() for Get.defaultDialog
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black, // Ensure text is visible
+                  side: const BorderSide(color: Colors.white, width: 2), // Example: White border with 2px thickness
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.sm),
+                ),
+                child: const Text('Cancel', style: TextStyle(color: Colors.black, fontSize: 16)),
+              ),
+            ),
+
+            // 5. Additional spacing at the bottom (optional)
+            const SizedBox(height: TSizes.md),
+          ],
         ),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: TSizes.lg),
-          child: Text('Delete'),
-        ),
-      ),
-      cancel: OutlinedButton(
-        child: const Text('Cancel'),
-        onPressed: () => Navigator.of(Get.overlayContext!).pop(),
-      ),
+      ],
+      // Remove confirm/cancel parameters as we are using actions: []
+      confirm: const SizedBox.shrink(),
+      cancel: const SizedBox.shrink(),
     );
   }
 
