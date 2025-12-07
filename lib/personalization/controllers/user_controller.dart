@@ -271,7 +271,7 @@ class UserController extends GetxController {
       contentPadding: const EdgeInsets.all(TSizes.md),
       title: 'Delete Account',
       middleText:
-      'Are you sure you want to delete your account permanently? This action is not reversible and all of your data will be removed permanently.',
+          'Are you sure you want to delete your account permanently? This action is not reversible and all of your data will be removed permanently.',
 
       // --- Custom Dialog Actions/Buttons ---
       actions: [
@@ -287,11 +287,21 @@ class UserController extends GetxController {
                   // Use a standard red for clear danger
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white, // Ensure text is visible
-                  side: const BorderSide(color: Colors.red, width: 2), // Example: White border with 2px thickness
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)), // Slight rounding
-                  padding: const EdgeInsets.symmetric(vertical: TSizes.sm), // Good vertical padding
+                  side: const BorderSide(
+                    color: Colors.red,
+                    width: 2,
+                  ), // Example: White border with 2px thickness
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ), // Slight rounding
+                  padding: const EdgeInsets.symmetric(
+                    vertical: TSizes.sm,
+                  ), // Good vertical padding
                 ),
-                child: const Text('Delete Account Permanently', style: TextStyle(fontSize: 16)),
+                child: const Text(
+                  'Delete Account Permanently',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             ),
 
@@ -302,15 +312,24 @@ class UserController extends GetxController {
             SizedBox(
               width: double.infinity, // Makes button full width
               child: OutlinedButton(
-                onPressed: () => Get.back(), // Use Get.back() for Get.defaultDialog
+                onPressed: () =>
+                    Get.back(), // Use Get.back() for Get.defaultDialog
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black, // Ensure text is visible
-                  side: const BorderSide(color: Colors.white, width: 2), // Example: White border with 2px thickness
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                  side: const BorderSide(
+                    color: Colors.white,
+                    width: 2,
+                  ), // Example: White border with 2px thickness
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: TSizes.sm),
                 ),
-                child: const Text('Cancel', style: TextStyle(color: Colors.black, fontSize: 16)),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
               ),
             ),
 
